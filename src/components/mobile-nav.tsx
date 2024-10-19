@@ -19,7 +19,7 @@ interface Props {
 
 export const MobileNav = ({ navLinks, mobnavLinks }: Props) => {
   return (
-    <div className=" md:hidden">
+    <div className="bg-white md:hidden">
       {/* top bar */}
       <section className="bg-black text-white justify-center items-center flex  place-items-center">
         <p className="flex gap-2 text-white ">
