@@ -17,15 +17,16 @@ const ImageBookPreview = ({ images }: Props) => {
   return (
     <div className="flex flex-wrap items-center gap-6 p-4">
       {/* Cover spread: Front cover and Back cover */}
+
       <div className="flex border p-2">
         {/* Front cover */}
         <div className="flex flex-col items-center py-2">
           <Image
-            src=""
+            src="/img1.webp"
             alt="Front cover"
             width={120}
             height={120}
-            className="object-contain w-[120px] h-[120px] rounded-md shadow"
+            className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
           />
           <p className="text-center text-xs mt-2">Front cover</p>
         </div>
@@ -33,11 +34,11 @@ const ImageBookPreview = ({ images }: Props) => {
         {/* Back cover */}
         <div className="flex flex-col items-center py-2">
           <Image
-            src=""
+            src="/img1.webp"
             alt="Back cover"
             width={120}
             height={120}
-            className="object-contain w-[120px] h-[120px] rounded-md shadow"
+            className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
           />
           <p className="text-center text-xs mt-2">Back cover</p>
         </div>
@@ -47,7 +48,7 @@ const ImageBookPreview = ({ images }: Props) => {
       <div className="flex border p-2">
         {/* Page 1 - "Page not available" */}
         <div className="flex flex-col items-center py-2">
-          <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow">
+          <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow-md">
             <p className="text-center text-xs">Page not available</p>
           </div>
           <p className="text-center text-xs mt-2">Page 1</p>
@@ -61,10 +62,10 @@ const ImageBookPreview = ({ images }: Props) => {
               alt="Page 2"
               width={120}
               height={120}
-              className="object-contain w-[120px] h-[120px] rounded-md shadow"
+              className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
             />
           ) : (
-            <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow">
+            <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow-md">
               <p className="text-center text-xs">Page not available</p>
             </div>
           )}
@@ -83,10 +84,10 @@ const ImageBookPreview = ({ images }: Props) => {
                 alt={`Page ${index * 2 + 3}`}
                 width={120}
                 height={120}
-                className="object-contain w-[120px] h-[120px] rounded-md shadow"
+                className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
               />
             ) : (
-              <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow">
+              <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow-md">
                 <p className="text-center text-xs">Page not available</p>
               </div>
             )}
@@ -101,10 +102,10 @@ const ImageBookPreview = ({ images }: Props) => {
                 alt={`Page ${index * 2 + 4}`}
                 width={120}
                 height={120}
-                className="object-contain w-[120px] h-[120px] rounded-md shadow"
+                className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
               />
             ) : (
-              <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow">
+              <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow-md">
                 <p className="text-center text-xs">Page not available</p>
               </div>
             )}
