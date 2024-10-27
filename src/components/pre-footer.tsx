@@ -4,7 +4,7 @@ import React from "react";
 const PreFooter = () => {
   return (
     <section className="bg-[#f6f6f6] p-6">
-      <div className="flex flex-col gap-2 md:grid md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex flex-col items-center gap-2 md:grid md:grid-cols-2 lg:grid-cols-3">
         {/* reviews */}
         <div className={cont_style}>
           <TruckFast size="20" color="#000000" variant="Outline" />

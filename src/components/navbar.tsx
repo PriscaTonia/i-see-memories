@@ -12,7 +12,7 @@ const Navbar = () => {
     },
     {
       title: "Shop All",
-      path: "/shop-all",
+      path: "/travel-photobooks",
     },
     {
       title: "About",
@@ -37,7 +37,7 @@ const Navbar = () => {
     },
   ];
   return (
-    <nav className="sticky top-0 w-full">
+    <nav className="sticky top-0 w-full z-50">
       {/* desktop */}
       <DesktopNav navLinks={navLinks} />
 

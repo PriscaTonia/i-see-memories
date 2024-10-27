@@ -21,11 +21,11 @@ const BeautifulMoments = () => {
             <Star1 size="20" color="#000000" variant="Bold" />
             High Quality Prints
           </p>
-          <h3 className="text-black font-bold text-[40px] uppercase leading-[48px]">
+          <h3 className="text-black font-bold text-2xl md:text-[40px] uppercase md:leading-[48px]">
             Beautiful quality for beautiful moments
           </h3>
 
-          <p className="text-[#666666] text-xl">
+          <p className="text-[#666666] text-base md:text-xl">
             Preserve your cherished moments in a beautifully crafted photobook
             that captures the essence of your adventures.
           </p>

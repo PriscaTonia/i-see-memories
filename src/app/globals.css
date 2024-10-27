@@ -2,15 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-/* body {
+/* Add this CSS to your global styles or component styles */
+.swiper-button-prev-custom,
+.swiper-button-next-custom {
+  background-color: white; /* Background color for better visibility */
+  border-radius: 50%; /* Make them circular */
+  border: 1px;
+  border-color: black;
+  padding: 10px; /* Add some padding for clickability */
+  z-index: 10; /* Ensure they are above other content */
 }
 
-@layer utilities {
-} */
+/* Optional: Adjust hover effects */
+.swiper-button-prev-custom:hover,
+.swiper-button-next-custom:hover {
+  background-color: #ddd; /* Change background on hover */
+}
 
 @layer base {
   :root {
-
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
 }

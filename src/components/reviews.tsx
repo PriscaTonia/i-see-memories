@@ -16,7 +16,7 @@ const Reviews = () => {
           </span>
           Rated 4.4/5 based on +1475 reviews
         </p>
-        <h3 className="text-black font-bold text-[40px] uppercase leading-[48px] lg:max-w-[40%] text-center">
+        <h3 className="text-black font-bold text-2xl md:text-[40px] uppercase md:leading-[48px] lg:max-w-[40%] text-center">
           Loved by thousands of &quot;I See&quot; Fans!
         </h3>
       </div>

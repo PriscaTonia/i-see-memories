@@ -6,10 +6,10 @@ const CreatePhotoBookSteps = () => {
     <section className="p-[28px] md:p-[60px] flex flex-col gap-[60px] bg-[#f6f6f6] font-hagrid">
       {/* part 1 */}
       <div className="flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:gap-x-[60px]">
-        <h3 className="text-black font-bold text-[40px] uppercase leading-[48px] max-w-[616px]">
+        <h3 className="text-black font-bold text-2xl md:text-[40px] uppercase md:leading-[48px] max-w-[616px]">
           It’s easy as 1, 2, 3 to create your photobook
         </h3>
-        <p className="flex flex-col text-black text-lg font-normal max-w-[616px]">
+        <p className="flex flex-col text-black text-base md:text-lg font-normal max-w-[616px]">
           With I see memories, you can easily transform your holiday photos into
           a stunning photobook that captures the essence of your journey. Simply
           upload your images, customize the layout, and add captions to create a

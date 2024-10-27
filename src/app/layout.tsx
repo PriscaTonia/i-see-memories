@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { alegreya, hagridText, khula } from "@/lib/font";
+import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "I See Memories",
@@ -22,6 +23,7 @@ export default function RootLayout({
         <main>
           <Navbar />
           {children}
+          <Footer />
         </main>
       </body>
     </html>

@@ -13,11 +13,11 @@ const FAQ = () => {
       <div className="flex flex-col-reverse gap-3 lg:grid lg:grid-cols-2 lg:gap-x-[60px]">
         {/* text */}
         <aside className="flex flex-col gap-5 justify-center bg-white">
-          <h3 className="text-black font-bold text-[40px] uppercase leading-[48px] md:max-w-[60%]">
+          <h3 className="text-black font-bold text-2xl md:text-[40px] uppercase md:leading-[48px] md:max-w-[60%]">
             FAQ
           </h3>
 
-          <p className="text-black font-normal text-lg">
+          <p className="text-black font-normal text-base md:text-lg">
             Find answers to commonly asked questions about &quot;I see
             memories&quot; photobooks and the creation process.
           </p>
@@ -26,7 +26,7 @@ const FAQ = () => {
             {faq_list?.map((item) => {
               return (
                 <AccordionItem
-                  className="text-lg text-black"
+                  className="text-base md:text-lg text-black"
                   key={item?.title}
                   value={item?.title}
                 >
@@ -53,7 +53,7 @@ const FAQ = () => {
 
 export default FAQ;
 
-const faq_list = [
+export const faq_list = [
   {
     title: "How to order?",
     description:
