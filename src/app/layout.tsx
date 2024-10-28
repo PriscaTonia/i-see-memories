@@ -1,8 +1,10 @@
+"use client";
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { alegreya, hagridText, khula } from "@/lib/font";
 import Footer from "@/components/footer";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "I See Memories",
@@ -22,7 +24,7 @@ export default function RootLayout({
       <body className="md:container">
         <main>
           <Navbar />
-          {children}
+          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
           <Footer />
         </main>
       </body>
