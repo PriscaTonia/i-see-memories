@@ -18,7 +18,7 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ images }) => {
   const [activeThumb, setActiveThumb] = useState<SwiperCore | null>(null);
 
   return (
-    <div className="carousel-container relative">
+    <div className="carousel-container w-full relative">
       {/* Main Swiper for the large images */}
       <Swiper
         modules={[Navigation, Thumbs]} // Enable lazy loading via modules
