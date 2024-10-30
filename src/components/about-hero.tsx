@@ -66,23 +66,6 @@ const AboutHeroSection = () => {
               last a lifetime. Each book is meticulously crafted to reflect the
               unique aesthetic and sentimental value of your experiences.
             </p>
-
-            {/* <div className="flex flex-col md:flex-row gap-2 items-center pt-8">
-              <Button
-                onClick={() => {
-                  push(`/travel-photobooks`);
-                }}
-                className="text-[#F1F0ED] bg-black hover:bg-[#F1F0ED] hover:text-black rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]"
-              >
-                Start My Design
-              </Button>
-              <Button
-                variant="outline"
-                className="text-[#000000] border-black hover:bg-black hover:text-[#F1F0ED] rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]"
-              >
-                Read the reviews
-              </Button>
-            </div> */}
           </aside>
           {/* image */}
           <Image

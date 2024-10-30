@@ -38,7 +38,10 @@ const Footer = () => {
           <Link href="/" className="text-sm font-normal underline text-black">
             Privacy policy
           </Link>
-          <Link href="/" className="text-sm font-normal underline text-black">
+          <Link
+            href="/about"
+            className="text-sm font-normal underline text-black"
+          >
             About us
           </Link>
         </div>
