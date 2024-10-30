@@ -84,7 +84,7 @@ const ProductSummary = () => {
           </aside>
 
           {/* other product order info */}
-          <aside className="min-h-[100vh] col-span-1 lg:col-span-2 p-8 border border-black border-opacity-15">
+          <aside className="h-auto col-span-1 lg:col-span-2 p-8 border border-black border-opacity-15">
             <h6 className="text-sm font-bold text-[#3b3b3b] uppercase">
               Great choice! You will love it!
             </h6>
