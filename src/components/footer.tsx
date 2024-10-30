@@ -5,7 +5,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <section className="py-[56px] px-[80px] flex flex-col gap-[3rem] md:gap-[8rem] bg-white font-hagrid">
+    <section className="py-[56px] px-[80px] flex flex-col gap-[3rem] md:gap-[8rem] bg-white container font-hagrid">
       {/* top section */}
       <div className="flex flex-col gap-6">
         <Link href="/" className="text-2xl font-bold font-alegreya -ml-10">

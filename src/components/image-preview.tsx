@@ -48,8 +48,8 @@ const ImageBookPreview = ({ images }: Props) => {
       <div className="flex border p-2">
         {/* Page 1 - "Page not available" */}
         <div className="flex flex-col items-center py-2">
-          <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow-md">
-            <p className="text-center text-xs">Page not available</p>
+          <div className="w-[120px] h-[120px] bg-gray-100 flex items-center justify-center rounded-md shadow-md">
+            <p className="text-center text-xs">Inside Front Cover</p>
           </div>
           <p className="text-center text-xs mt-2">Page 1</p>
         </div>
@@ -105,8 +105,8 @@ const ImageBookPreview = ({ images }: Props) => {
                 className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
               />
             ) : (
-              <div className="w-[120px] h-[120px] bg-gray-200 flex items-center justify-center rounded-md shadow-md">
-                <p className="text-center text-xs">Page not available</p>
+              <div className="w-[120px] h-[120px] bg-gray-100 flex items-center justify-center rounded-md shadow-md">
+                <p className="text-center text-xs">Inside Back Cover</p>
               </div>
             )}
             <p className="text-center text-xs mt-2">Page {index * 2 + 4}</p>

@@ -5,7 +5,7 @@ import React from "react";
 const BeautifulMoments = () => {
   return (
     <section className="px-5 py-[60px]">
-      <div className="flex flex-col lg:grid lg:grid-cols-2 ">
+      <div className="container flex flex-col lg:grid lg:grid-cols-2 ">
         {/* image */}
         <Image
           src="/quality-moments.webp"

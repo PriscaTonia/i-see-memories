@@ -21,7 +21,7 @@ export default function RootLayout({
       lang="en"
       className={`${alegreya.variable} ${khula.variable} ${hagridText.variable} `}
     >
-      <body className="md:container">
+      <body className="">
         <main>
           <Navbar />
           <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>

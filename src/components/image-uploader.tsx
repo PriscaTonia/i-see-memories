@@ -99,9 +99,14 @@ const ImageUploader = ({ max_num_page, images, setImages }: Props) => {
     setImages(updatedImages);
   };
 
-  // Delete image by index
+  // Delete image by index with confirmation
   const deleteImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this image?"
+    );
+    if (confirmed) {
+      setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    }
   };
 
   return (

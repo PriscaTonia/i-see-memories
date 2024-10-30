@@ -9,8 +9,8 @@ import {
 
 const FAQ = () => {
   return (
-    <section className="py-[60px] px-5 font-hagrid">
-      <div className="flex flex-col-reverse gap-3 lg:grid lg:grid-cols-2 lg:gap-x-[60px]">
+    <section className=" font-hagrid">
+      <div className="flex container py-[60px] px-5 flex-col-reverse gap-3 lg:grid lg:grid-cols-2 lg:gap-x-[60px]">
         {/* text */}
         <aside className="flex flex-col gap-5 justify-center bg-white">
           <h3 className="text-black font-bold text-2xl md:text-[40px] uppercase md:leading-[48px] md:max-w-[60%]">
