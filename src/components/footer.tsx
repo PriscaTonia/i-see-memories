@@ -29,7 +29,10 @@ const Footer = () => {
         </p>
 
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
-          <Link href="/" className="text-sm font-normal underline text-black">
+          <Link
+            href="/terms-and-conditions"
+            className="text-sm font-normal underline text-black"
+          >
             Terms and condition
           </Link>
           <Link href="/" className="text-sm font-normal underline text-black">
