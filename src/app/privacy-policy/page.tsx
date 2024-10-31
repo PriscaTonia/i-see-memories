@@ -4,7 +4,7 @@ import React from "react";
 const PrivacyPolicy = () => {
   return (
     <section className="font-hagrid">
-      <div className="container p-6 md:py-[60px] md:px-6 flex flex-col gap-4">
+      <div className="container p-6 md:py-[60px] lg:max-w-[90%] md:px-6 flex flex-col gap-4">
         <h3 className="text-xl font-bold mt-6">
           Privacy Policy Summary for I see memories
         </h3>

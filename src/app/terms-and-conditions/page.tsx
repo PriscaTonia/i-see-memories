@@ -4,7 +4,7 @@ import React from "react";
 const TermsAndConditions = () => {
   return (
     <section className="font-hagrid">
-      <div className="container p-6 md:py-[60px] md:px-6 flex flex-col gap-4">
+      <div className="container lg:max-w-[90%] p-6 md:py-[60px] md:px-6 flex flex-col gap-4">
         {/* overview */}
         <h1 className="font-bold text-2xl lg:text-4xl">Overview</h1>
 
