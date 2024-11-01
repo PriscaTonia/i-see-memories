@@ -49,9 +49,10 @@ const TravelPhotoBook = () => {
             </h2>
 
             <h5 className="flex gap-3 items-center font-bold text-lg">
-              {selectedPage.page} Pages for N{formatNumber(selectedPage.price)}
+              {selectedPage?.page} Pages for N
+              {formatNumber(selectedPage?.price)}
               <span className="font-normal line-through">
-                N{formatNumber(0.5 * selectedPage.price)}
+                N{formatNumber(0.5 * selectedPage?.price)}
               </span>
               <span className="bg-black text-white px-3 py-[2px] rounded-[36px]">
                 50% off
@@ -94,7 +95,7 @@ const TravelPhotoBook = () => {
 
             <Select
               onValueChange={(value) =>
-                setSelectedPage(pages.find((p) => p.id === value) || pages[0])
+                setSelectedPage(pages?.find((p) => p?.id === value) || pages[0])
               }
             >
               <SelectTrigger className="flex justify-center border-[2px] py-5 px-[56px] min-h-[68px] focus:outline-none focus:ring-0 rounded-md border-black">
@@ -107,11 +108,11 @@ const TravelPhotoBook = () => {
                 {pages.map((page) => {
                   return (
                     <SelectItem
-                      key={page.id}
+                      key={page?.id}
                       className="text-base lg:text-lg font-bold font-hagrid"
-                      value={page.id}
+                      value={page?.id}
                     >
-                      {page.page} Pages
+                      {page?.page} Pages
                     </SelectItem>
                   );
                 })}
@@ -121,7 +122,7 @@ const TravelPhotoBook = () => {
             <Button
               onClick={() => {
                 push(
-                  `/travel-photobooks/select-photos?pages=${selectedPage.page}`
+                  `/travel-photobooks/select-photos?pages=${selectedPage?.page}`
                 );
               }}
               variant="outline"

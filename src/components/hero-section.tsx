@@ -4,7 +4,7 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <section className="bg-hero-image min-h-[60vh]">
+    <section className="bg-hero-image bg-no-repeat bg-cover min-h-[60vh]">
       <div className="container py-[40px] md:py-[120px] px-[28px] md:px-[60px] flex flex-col gap-6">
         <div className="flex w-full justify-center items-center">
           <p className="bg-white rounded-3xl items-center font-bold text-base md:text-lg py-[10px] flex gap-[10px] px-6">
@@ -38,7 +38,7 @@ const Hero = () => {
           </Button>
           <Button
             variant="outline"
-            className="text-[#F1F0ED] rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]"
+            className="text-[#F1F0ED] bg-transparent rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]"
           >
             Read the reviews
           </Button>

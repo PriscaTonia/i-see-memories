@@ -86,7 +86,10 @@ export const DesktopNav = ({ navLinks }: Props) => {
           </Link>
 
           <div className="flex gap-5 col-span-1 justify-self-end ">
-            <Profile size="24" color="#000000" />
+            <Link href="/auth/sign-in">
+              <Profile size="24" color="#000000" />
+            </Link>
+
             <ShoppingCart size="24" color="#000000" />
           </div>
         </div>
