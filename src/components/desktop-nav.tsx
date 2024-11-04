@@ -90,7 +90,9 @@ export const DesktopNav = ({ navLinks }: Props) => {
               <Profile size="24" color="#000000" />
             </Link>
 
-            <ShoppingCart size="24" color="#000000" />
+            <Link href="/cart">
+              <ShoppingCart size="24" color="#000000" />
+            </Link>
           </div>
         </div>
       </section>

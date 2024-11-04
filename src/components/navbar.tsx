@@ -32,7 +32,7 @@ const Navbar = () => {
     },
     {
       title: "Cart",
-      path: "/",
+      path: "/cart",
       icon: <BagHappy size="24" color="#000000" />,
     },
   ];

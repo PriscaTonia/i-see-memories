@@ -35,8 +35,13 @@ export const MobileNav = ({ navLinks, mobnavLinks }: Props) => {
         </Link>
 
         <div className="flex gap-3 items-center">
-          <Profile size="24" color="#000000" />
-          <ShoppingCart size="24" color="#000000" />
+          <Link href="/auth/sign-in">
+            <Profile size="24" color="#000000" />
+          </Link>
+
+          <Link href="/cart">
+            <ShoppingCart size="24" color="#000000" />
+          </Link>
 
           <Sheet>
             <SheetTrigger>
