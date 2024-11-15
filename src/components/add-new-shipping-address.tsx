@@ -189,7 +189,7 @@ const AddNewShippingAddress = ({ isOpen, onClose }: Props) => {
             <DialogFooter className="flex flex-col md:flex-row col-span-1 lg:col-span-2 justify-between w-full items-center">
               <Button
                 type="button"
-                className="border border-black bg-white text-black"
+                className="border border-black text-black w-fit bg-white hover:bg-black hover:text-white"
                 onClick={onClose}
               >
                 Cancel

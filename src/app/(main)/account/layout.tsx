@@ -6,6 +6,7 @@ import { useMedia } from "react-use";
 import { usePathname } from "next/navigation";
 import { HambergerMenu } from "iconsax-react";
 import Sidebar, { sidebarLinks } from "@/components/sidebar";
+import PreFooter from "@/components/pre-footer";
 
 export default function AccountLayout({
   children,
@@ -35,7 +36,7 @@ export default function AccountLayout({
 
         {currentPath?.title ? currentPath?.title : ""}
       </button>
-      <section className="relative flex max-h-screen w-full gap-[5%] px-5 pb-8 pt-6 md:px-20 lg:max-h-[80vh]">
+      <section className="relative container flex max-h-screen w-full gap-[5%] px-5 pb-8 pt-6 md:px-20 lg:max-h-[80vh]">
         <Sidebar
           handleCloseSidebar={handleCloseSidebar}
           isOpen={isSidebarOpen}
@@ -49,6 +50,7 @@ export default function AccountLayout({
           {children}
         </div>
       </section>
+      <PreFooter />
     </>
   );
 }

@@ -35,9 +35,9 @@ const Footer = () => {
           >
             Terms and condition
           </Link>
-          <Link href="/" className="text-sm font-normal underline text-black">
+          {/* <Link href="/" className="text-sm font-normal underline text-black">
             Contact us
-          </Link>
+          </Link> */}
           <Link
             href="/privacy-policy"
             className="text-sm font-normal underline text-black"

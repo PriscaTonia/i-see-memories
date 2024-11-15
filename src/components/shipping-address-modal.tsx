@@ -35,7 +35,7 @@ const ShippingAddressModal = ({ isOpen, onClose }: Props) => {
           <div className="flex flex-col gap-6">
             <Button
               type="button"
-              className="border border-black text-black w-fit bg-white"
+              className="border border-black text-black w-fit bg-white hover:bg-black hover:text-white"
               onClick={openDialog}
             >
               Add New
@@ -67,7 +67,7 @@ const ShippingAddressModal = ({ isOpen, onClose }: Props) => {
           <DialogFooter className="flex justify-between w-full items-center">
             <Button
               type="button"
-              className="border border-black bg-white text-black"
+              className="border border-black text-black w-fit bg-white hover:bg-black hover:text-white"
               onClick={onClose}
             >
               Cancel
