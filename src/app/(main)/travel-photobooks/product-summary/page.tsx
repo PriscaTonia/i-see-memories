@@ -3,6 +3,7 @@ import CountDown from "@/components/countdown";
 import PreFooter from "@/components/pre-footer";
 // import ImageCarousel from "@/components/image-carousel";
 import { Button } from "@/components/ui/button";
+import AXIOS from "@/lib/axios";
 import { photoBookStore } from "@/store";
 import clsx from "clsx";
 import { Add, Minus } from "iconsax-react";
@@ -10,6 +11,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { Fragment, useState } from "react";
 import { useStore } from "zustand";
+
+export async function UploadMedia(file: File | Blob) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return await AXIOS.post("media", formData);
+}
 
 const ProductSummary = () => {
   const { back } = useRouter();
@@ -30,7 +38,22 @@ const ProductSummary = () => {
     decrementOrderNo();
   };
 
-  const [selectedImage, setSelectedImage] = useState<string>(photoBook[0]);
+  const [selectedImage, setSelectedImage] = useState<File>(photoBook[0]);
+
+  const onSubmit = async () => {
+    // console.log({ photoBook });
+
+    const imgPromises = photoBook.map((image) => {
+      return UploadMedia(image); // Make sure 'image' is a File
+    });
+
+    try {
+      const responses = await Promise.all(imgPromises);
+      console.log({ responses });
+    } catch (error) {
+      console.error("Error uploading images:", error);
+    }
+  };
 
   console.log({ photoBook });
 
@@ -59,7 +82,7 @@ const ProductSummary = () => {
                       )}
                     >
                       <Image
-                        src={image}
+                        src={URL.createObjectURL(image)}
                         alt=""
                         width={100}
                         height={100}
@@ -72,13 +95,17 @@ const ProductSummary = () => {
               </div>
 
               <div className="inline-flex h-[300px] w-full items-center justify-center px-[15.5px] md:h-[360px] lg:px-[23.68px]">
-                <Image
-                  src={selectedImage}
-                  alt=""
-                  width={477}
-                  height={360}
-                  className="!h-full !max-h-[360px] object-contain "
-                />
+                {selectedImage instanceof File ? (
+                  <Image
+                    src={URL.createObjectURL(selectedImage)}
+                    alt=""
+                    width={477}
+                    height={360}
+                    className="!h-full !max-h-[360px] object-contain "
+                  />
+                ) : (
+                  <p>No image selected</p>
+                )}
               </div>
             </div>
           </aside>
@@ -196,7 +223,7 @@ const ProductSummary = () => {
 
               <Button
                 onClick={() => {
-                  console.log("Added to cart");
+                  onSubmit();
                 }}
                 className="text-[#F1F0ED] w-[70%] h-full bg-black border-black hover:bg-[#F1F0ED] hover:text-[#000000] rounded-md font-bold text-lg py-5 px-10"
               >

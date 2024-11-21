@@ -1,3 +1,4 @@
+"use client";
 import {
   MoneyRecive,
   Profile,
@@ -16,12 +17,27 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface Props {
   navLinks: { title: string; path: string }[];
 }
 
 export const DesktopNav = ({ navLinks }: Props) => {
+  const router = useRouter();
+
+  // Simulate authentication check (replace this with your real logic)
+  const isAuthenticated =
+    typeof window !== "undefined" && localStorage.getItem("token");
+
+  const handleProfileClick = () => {
+    if (isAuthenticated) {
+      router.push("/account/profile-settings");
+    } else {
+      router.push("/auth/sign-in");
+    }
+  };
+
   return (
     <div className="font-khula hidden md:flex flex-col">
       {/* top bar */}
@@ -86,9 +102,9 @@ export const DesktopNav = ({ navLinks }: Props) => {
           </Link>
 
           <div className="flex gap-5 col-span-1 justify-self-end ">
-            <Link href="/auth/sign-in">
+            <button onClick={handleProfileClick}>
               <Profile size="24" color="#000000" />
-            </Link>
+            </button>
 
             <Link href="/cart">
               <ShoppingCart size="24" color="#000000" />

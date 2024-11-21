@@ -17,6 +17,13 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { useRouter } from "next/navigation";
+import { loginUser } from "@/services/auth-services";
+import { notify } from "@/lib/notify";
+import { AxiosError } from "axios";
+import { Loader2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -26,6 +33,8 @@ const formSchema = z.object({
 });
 
 const SignIn = () => {
+  const { push } = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,8 +43,42 @@ const SignIn = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  //@ts-expect-error error
+  const { mutate: login, isLoading } = useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      return await loginUser(data);
+    },
+    onSuccess: (data) => {
+      // Save JWT to localStorage
+      const token = data?.data?.jwt;
+
+      console.log(token);
+
+      if (token) {
+        // Store token in cookies
+        Cookies.set("token", token, { expires: 7, path: "" });
+        notify("success", "Login successful!");
+        push("/account/profile-settings");
+      } else {
+        notify("error", "Failed to retrieve token. Please try again.");
+      }
+    },
+    onError: (error: AxiosError) => {
+      console.log(error);
+
+      const message =
+        // @ts-expect-error error
+        error.response?.data?.message ||
+        "An error occurred during registration.";
+      notify("error", message);
+    },
+  });
+
+  const onSubmit = (values: { email: string; password: string }) => {
+    login({
+      email: values?.email,
+      password: values?.password,
+    });
   };
 
   return (
@@ -88,7 +131,10 @@ const SignIn = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Sign In</Button>
+            <Button disabled={isLoading} type="submit">
+              {isLoading && <Loader2 className="animate-spin w-5 h-5" />} Sign
+              In
+            </Button>
           </form>
         </Form>
 

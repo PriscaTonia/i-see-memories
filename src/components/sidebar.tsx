@@ -4,6 +4,7 @@ import { useMedia } from "react-use";
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { CircleX, LogOut } from "lucide-react";
+import { logoutUser } from "@/lib/logout";
 
 interface Props {
   handleCloseSidebar: () => void;
@@ -14,6 +15,11 @@ const Sidebar = ({ handleCloseSidebar, isOpen }: Props) => {
   const isMobileSize = useMedia("(max-width: 1023px)", false);
   const pathname = usePathname();
   const router = useRouter();
+
+  const logout = async () => {
+    await logoutUser();
+    router.push("/auth/sign-in");
+  };
 
   return (
     <div
@@ -70,6 +76,7 @@ const Sidebar = ({ handleCloseSidebar, isOpen }: Props) => {
               "flex w-full max-w-[80%] absolute bottom-10 cursor-pointer items-center gap-[10px] rounded p-[10px] text-[#545454] hover:bg-app-gray hover:font-semibold"
             )}
             onClick={() => {
+              logout();
               handleCloseSidebar();
             }}
           >

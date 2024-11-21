@@ -16,15 +16,16 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import { notify } from "@/lib/notify";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "@/services/auth-services";
+import { Loader2 } from "lucide-react";
 
 // Form schema with validation
 const formSchema = z
   .object({
-    firstName: z.string().min(1, { message: "First name is required." }),
-    lastName: z.string().min(1, { message: "Last name is required." }),
-    phoneNumber: z
-      .string()
-      .regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid phone number." }),
     email: z.string().email({ message: "Invalid email address." }),
     password: z
       .string()
@@ -32,15 +33,6 @@ const formSchema = z
     confirmPassword: z
       .string()
       .min(6, { message: "Please confirm your password." }),
-    address: z.object({
-      street: z.string().min(1, { message: "Street is required." }),
-      zipcode: z
-        .string()
-        .min(5, { message: "Zipcode must be at least 5 characters." }),
-      city: z.string().min(1, { message: "City is required." }),
-      state: z.string().min(1, { message: "State is required." }),
-      country: z.string().min(1, { message: "Country is required." }),
-    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -48,27 +40,42 @@ const formSchema = z
   });
 
 const SignUp = () => {
+  const { push } = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      phoneNumber: "",
       email: "",
       password: "",
       confirmPassword: "",
-      address: {
-        street: "",
-        zipcode: "",
-        city: "",
-        state: "",
-        country: "",
-      },
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  //@ts-expect-error error
+  const { mutate: register, isLoading } = useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      return await registerUser(data);
+    },
+    onSuccess: () => {
+      notify("success", "Registration successful!");
+      push("/auth/sign-in");
+    },
+    onError: (error: AxiosError) => {
+      console.log(error);
+
+      const message =
+        // @ts-expect-error error
+        error.response?.data?.message ||
+        "An error occurred during registration.";
+      notify("error", message);
+    },
+  });
+
+  const onSubmit = (values: { email: string; password: string }) => {
+    register({
+      email: values?.email,
+      password: values?.password,
+    });
   };
 
   return (
@@ -94,47 +101,6 @@ const SignUp = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="gap-6 grid grid-cols-1 lg:grid-cols-2"
           >
-            {/* Name fields */}
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="First name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Last name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Contact fields */}
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="+1234567890" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="email"
@@ -183,75 +149,13 @@ const SignUp = () => {
                 </FormItem>
               )}
             />
-            {/* Address fields */}
-            <FormField
-              control={form.control}
-              name="address.street"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Street</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Street and house number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address.zipcode"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Zipcode</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Zipcode" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address.city"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input placeholder="City" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address.state"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>State</FormLabel>
-                  <FormControl>
-                    <Input placeholder="State" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address.country"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Country</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Country" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <Button type="submit" className="col-span-1 lg:col-span-2">
-              Create Account
+            <Button
+              disabled={isLoading}
+              type="submit"
+              className="col-span-1 lg:col-span-2"
+            >
+              {isLoading && <Loader2 className="animate-spin" />} Create Account
             </Button>
           </form>
         </Form>

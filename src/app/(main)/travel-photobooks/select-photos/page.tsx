@@ -11,7 +11,7 @@ import { photoBookStore } from "@/store";
 
 const SelectPhotos = () => {
   const { push } = useRouter();
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<File[]>([]);
   const [view, setView] = useState<string>("image-upload");
 
   const searchParams = useSearchParams();
@@ -27,7 +27,7 @@ const SelectPhotos = () => {
     (state) => state.updatePhotoBooks
   );
 
-  const handleUpload = (newImages: string[]) => {
+  const handleUpload = (newImages: File[]) => {
     updatePhotoBooks(newImages); // Call the update function with new images
   };
 
@@ -36,8 +36,6 @@ const SelectPhotos = () => {
       setImages(photoBook);
     }
   }, [photoBook]);
-
-  console.log(photoBook);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

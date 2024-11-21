@@ -5,12 +5,13 @@ import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash } from "lucide-react"; // Import Trash icon
+import { Plus, Trash } from "lucide-react";
+import { notify } from "@/lib/notify";
 
 interface Props {
   max_num_page: number;
-  images: string[];
-  setImages: React.Dispatch<React.SetStateAction<string[]>>;
+  images: File[]; // Store File objects instead of preview URLs
+  setImages: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 interface DragItem {
@@ -22,8 +23,17 @@ const ItemTypes = {
   IMAGE: "image",
 };
 
-// DraggableImage component now receives a deleteImage prop
-const DraggableImage = ({ image, index, moveImage, deleteImage }) => {
+const DraggableImage = ({
+  image,
+  index,
+  moveImage,
+  deleteImage,
+}: {
+  image: File;
+  index: number;
+  moveImage: (fromIndex: number, toIndex: number) => void;
+  deleteImage: (index: number) => void;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drag] = useDrag({
@@ -36,31 +46,32 @@ const DraggableImage = ({ image, index, moveImage, deleteImage }) => {
     hover: (draggedItem: DragItem) => {
       if (draggedItem.index !== index) {
         moveImage(draggedItem.index, index);
-        draggedItem.index = index; // Update the dragged item's index after the swap
+        draggedItem.index = index;
       }
     },
   });
 
-  drag(drop(ref)); // Attach both drag and drop refs to the same DOM node
+  drag(drop(ref));
 
   return (
     <div
       ref={ref}
-      className="w-[150px] hover:border p-[2px] h-fit flex flex-col items-center justify-center cursor-grab relative group" // Add 'relative' and 'group' for hover styling
+      className="w-[150px] hover:border p-[2px] h-fit flex flex-col items-center justify-center cursor-grab relative group"
     >
+      {/* Generate preview dynamically */}
       <Image
         width={150}
         height={150}
-        src={image}
+        src={URL.createObjectURL(image)}
         alt={`Uploaded Image ${index + 1}`}
         className="object-contain w-[150px] h-[150px]"
       />
       <p>Page {index + 1}</p>
 
-      {/* Delete icon - visible on hover */}
+      {/* Delete icon */}
       <button
         onClick={() => deleteImage(index)}
-        className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" // Styles for hover visibility
+        className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
       >
         <Trash size={16} />
       </button>
@@ -69,26 +80,41 @@ const DraggableImage = ({ image, index, moveImage, deleteImage }) => {
 };
 
 const ImageUploader = ({ max_num_page, images, setImages }: Props) => {
-  // Dropzone configuration
   const onDrop = (acceptedFiles: File[]) => {
     if (images.length >= max_num_page) {
       alert(`You can upload a maximum of ${max_num_page} images.`);
       return;
     }
 
-    const imageFiles = acceptedFiles.map((file) => URL.createObjectURL(file));
+    const validFiles = acceptedFiles.filter((file) => {
+      if (file.size > 5 * 1024 * 1024) {
+        // Check if file size is greater than 5MB
+        notify("error", "One or more images exceed the 5MB size limit.");
+        return false;
+      }
+      return true;
+    });
+
+    // Filter out SVG files based on MIME type and show a toast
+    const nonSvgFiles = acceptedFiles.filter(
+      (file) => file.type !== "image/svg+xml"
+    );
+    if (acceptedFiles.length !== nonSvgFiles.length) {
+      notify("error", "SVG files are not allowed.");
+    }
 
     // Add only up to the max limit
     setImages((prevImages) => [
       ...prevImages,
-      ...imageFiles.slice(0, max_num_page - prevImages.length),
+      ...validFiles.slice(0, max_num_page - prevImages.length),
     ]);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [],
+      "image/*": [], // Allows all image formats
+      "image/svg+xml": [], // Specifically allow SVG files
     },
   });
 
@@ -99,7 +125,6 @@ const ImageUploader = ({ max_num_page, images, setImages }: Props) => {
     setImages(updatedImages);
   };
 
-  // Delete image by index with confirmation
   const deleteImage = (index: number) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this image?"
@@ -111,23 +136,19 @@ const ImageUploader = ({ max_num_page, images, setImages }: Props) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      {/* Dropzone area */}
       <div
         {...getRootProps({ className: "dropzone" })}
         className="flex flex-col justify-center items-center gap-6 border-2 border-dashed border-gray-400 p-4"
       >
         <input {...getInputProps()} />
-
         <h3 className="text-[30px] text-[#3b3b3b] font-khula leading-[30px] font-bold text-center">
           Smart Photo Book
         </h3>
-
         <p className="max-w-[60%] lg:max-w-[30%] text-xs font-khula text-center">
           Upload your photos, and we will instantly craft your photo book. It
           picks the best shots and organizes everything chronologically -
           without you lifting a finger. Maximum upload is {max_num_page} pages.
         </p>
-
         <Button
           disabled={images.length >= max_num_page}
           className={`text-[#F1F0ED] max-w-[60%] lg:max-w-[40%] bg-black hover:bg-[#F1F0ED] hover:text-black rounded-md min-h-[68px] font-bold py-5 px-[56px]`}
@@ -141,16 +162,15 @@ const ImageUploader = ({ max_num_page, images, setImages }: Props) => {
         </Button>
       </div>
 
-      {/* Drag and Drop Area */}
       <div className="w-full flex flex-wrap gap-3 p-4">
         {images.length > 0 ? (
           images.map((image, index) => (
             <DraggableImage
-              key={`${image}-${index}`}
+              key={`${image.name}-${index}`}
               image={image}
               index={index}
               moveImage={moveImage}
-              deleteImage={deleteImage} // Pass delete function as prop
+              deleteImage={deleteImage}
             />
           ))
         ) : (

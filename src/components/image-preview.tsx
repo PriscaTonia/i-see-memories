@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 
 interface Props {
-  images: string[];
+  images: File[];
 }
 
 const ImageBookPreview = ({ images }: Props) => {
@@ -58,7 +58,7 @@ const ImageBookPreview = ({ images }: Props) => {
         <div className="flex flex-col items-center py-2">
           {images[0] ? (
             <Image
-              src={images[0]}
+              src={URL.createObjectURL(images[0])}
               alt="Page 2"
               width={120}
               height={120}
@@ -80,7 +80,7 @@ const ImageBookPreview = ({ images }: Props) => {
           <div className="flex flex-col items-center py-2">
             {page[0] ? (
               <Image
-                src={page[0]}
+                src={URL.createObjectURL(page[0])}
                 alt={`Page ${index * 2 + 3}`}
                 width={120}
                 height={120}
@@ -98,7 +98,7 @@ const ImageBookPreview = ({ images }: Props) => {
           <div className="flex flex-col items-center py-2">
             {page[1] ? (
               <Image
-                src={page[1]}
+                src={URL.createObjectURL(page[0])}
                 alt={`Page ${index * 2 + 4}`}
                 width={120}
                 height={120}

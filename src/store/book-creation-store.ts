@@ -2,12 +2,12 @@
 import { createStore } from "zustand/vanilla";
 
 export type PhotoBookState = {
-  photoBook: string[];
+  photoBook: File[];
   orderNo: number;
 };
 
 export type PhotoBookActions = {
-  updatePhotoBooks: (newImages: string[]) => void; // Accepts new images as an argument
+  updatePhotoBooks: (newImages: File[]) => void; // Accepts new images as an argument
   incrementOrderNo: () => void;
   decrementOrderNo: () => void;
 };
@@ -27,7 +27,7 @@ export const createPhotoBookStore = (
   return createStore<PhotoBookStore>()((set) => ({
     ...initState,
     // Update the photo book with new images, replacing the previous state
-    updatePhotoBooks: (newImages: string[]) => set({ photoBook: newImages }), // Directly set new images
+    updatePhotoBooks: (newImages: File[]) => set({ photoBook: newImages }), // Directly set new images
 
     // Increment the orderNo by 1
     incrementOrderNo: () => set((state) => ({ orderNo: state.orderNo + 1 })),
