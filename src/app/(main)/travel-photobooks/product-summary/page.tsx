@@ -3,8 +3,13 @@ import CountDown from "@/components/countdown";
 import PreFooter from "@/components/pre-footer";
 // import ImageCarousel from "@/components/image-carousel";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import AXIOS from "@/lib/axios";
+import { notify } from "@/lib/notify";
+import { createOrder } from "@/services/order-services";
 import { photoBookStore } from "@/store";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import clsx from "clsx";
 import { Add, Minus } from "iconsax-react";
 import Image from "next/image";
@@ -12,50 +17,87 @@ import { useRouter } from "next/navigation";
 import React, { Fragment, useState } from "react";
 import { useStore } from "zustand";
 
-export async function UploadMedia(file: File | Blob) {
+export async function UploadMedia(
+  file: File | Blob,
+  orderId: string,
+  pageNo: number
+) {
   const formData = new FormData();
   formData.append("file", file);
+  formData.append("orderId", orderId);
+  formData.append("pageNo", pageNo as unknown as string);
 
-  return await AXIOS.post("media", formData);
+  return AXIOS.post("pictures", formData);
 }
 
 const ProductSummary = () => {
-  const { back } = useRouter();
+  const { back, push } = useRouter();
+
   // Access the photoBook state
   const photoBook = useStore(photoBookStore, (state) => state.photoBook);
-  const orderNo = useStore(photoBookStore, (state) => state.orderNo);
-  const incrementOrderNo = useStore(
+  const quantity = useStore(photoBookStore, (state) => state.quantity);
+  const productId = useStore(photoBookStore, (state) => state.productId);
+  const template = useStore(photoBookStore, (state) => state.template);
+  const incrementQuantity = useStore(
     photoBookStore,
-    (state) => state.incrementOrderNo
+    (state) => state.incrementQuantity
   );
-  const decrementOrderNo = useStore(
+  const decrementQuantity = useStore(
     photoBookStore,
-    (state) => state.decrementOrderNo
+    (state) => state.decrementQuantity
   );
 
   const handleDecrement = () => {
-    if (orderNo === 1) return;
-    decrementOrderNo();
+    if (quantity === 1) return;
+    decrementQuantity();
   };
 
   const [selectedImage, setSelectedImage] = useState<File>(photoBook[0]);
 
+  const {
+    mutate: create,
+    isPending,
+    data,
+  } = useMutation({
+    mutationFn: async (data: {
+      productId: string;
+      fullCoverUrl: string;
+      frontCoverUrl: string;
+      quantity: number;
+    }) => {
+      return await createOrder(data);
+    },
+    onSuccess: async (data) => {
+      const imgPromises = photoBook.map((image, i) => {
+        return UploadMedia(image, data?.data?._id, i + 1);
+      });
+
+      try {
+        const responses = await Promise.all(imgPromises);
+        notify("success", "Order created successfully!");
+        push("/cart");
+      } catch (error) {
+        console.error("Error uploading images:", error);
+      }
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      const message = error.response?.data?.message;
+      notify("error", message as string);
+    },
+  });
+
   const onSubmit = async () => {
-    // console.log({ photoBook });
+    const data = {
+      productId: productId,
+      quantity: quantity,
+      frontCoverUrl: template?.frontCoverUrl,
+      fullCoverUrl: template?.fullCoverUrl,
+    };
 
-    const imgPromises = photoBook.map((image) => {
-      return UploadMedia(image); // Make sure 'image' is a File
-    });
-
-    try {
-      const responses = await Promise.all(imgPromises);
-      console.log({ responses });
-    } catch (error) {
-      console.error("Error uploading images:", error);
-    }
+    const res = await create(data);
   };
 
-  console.log({ photoBook });
+  // console.log({ photoBook, productId, template, quantity });
 
   return (
     <Fragment>
@@ -215,8 +257,8 @@ const ProductSummary = () => {
                 <button onClick={handleDecrement} className="p-3">
                   <Minus size="20" color="#000000" />
                 </button>
-                <p className="p-3 font-bold">{orderNo}</p>
-                <button onClick={incrementOrderNo} className="p-3">
+                <p className="p-3 font-bold">{quantity}</p>
+                <button onClick={incrementQuantity} className="p-3">
                   <Add size="20" color="#000000" />
                 </button>
               </div>
@@ -227,7 +269,7 @@ const ProductSummary = () => {
                 }}
                 className="text-[#F1F0ED] w-[70%] h-full bg-black border-black hover:bg-[#F1F0ED] hover:text-[#000000] rounded-md font-bold text-lg py-5 px-10"
               >
-                Add To Cart
+                {isPending && <LoadingSpinner />} Add To Cart
               </Button>
             </div>
 
@@ -240,7 +282,7 @@ const ProductSummary = () => {
           </aside>
         </section>
 
-        <div className="w-full my-6">
+        <div className="w-full my-6 p-3">
           <Button
             onClick={() => {
               back();

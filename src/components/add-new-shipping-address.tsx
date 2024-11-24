@@ -18,10 +18,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { updateProfile } from "@/services/profile-services";
+import { notify } from "@/lib/notify";
+import { AxiosError } from "axios";
+import { LoadingSpinner } from "./ui/loading-spinner";
+import { useEffect } from "react";
+import { updateCartItemsShipping } from "@/services/cart-services";
+import { CartItem, Profile } from "@/lib/types";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  refetch: () => void;
+  refetchCart: () => void;
+  profileInformation: Profile;
+  cartList: CartItem[];
 }
 
 // Form schema with validation
@@ -42,7 +54,14 @@ const formSchema = z.object({
   }),
 });
 
-const AddNewShippingAddress = ({ isOpen, onClose }: Props) => {
+const AddNewShippingAddress = ({
+  isOpen,
+  onClose,
+  refetch,
+  profileInformation,
+  cartList,
+  refetchCart,
+}: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,15 +79,117 @@ const AddNewShippingAddress = ({ isOpen, onClose }: Props) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const { setValue } = form;
+
+  // update shipping address in profile
+  const { mutate: update, isPending } = useMutation({
+    mutationFn: async ({
+      body,
+    }: {
+      body: {
+        name: string;
+        zipcode: string;
+        country: string;
+        street: string;
+        state: string;
+        city: string;
+        phoneNum: string;
+      };
+    }) => {
+      return await updateProfile({ body: body });
+    },
+    onSuccess: async () => {
+      notify("success", "Profile Updated successfully!");
+      refetch();
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      const message = error.response?.data?.message;
+      notify("error", message as string);
+    },
+  });
+
+  // update shipping address for all cart items
+  const { mutate: updateCart, isPending: isUpdateCartPending } = useMutation({
+    mutationFn: async ({
+      body,
+    }: {
+      body: {
+        ids: string[];
+        shippingDetails: {
+          name: string;
+          zipcode: string;
+          country: string;
+          street: string;
+          state: string;
+          city: string;
+          phoneNum: string;
+        };
+      };
+    }) => {
+      return await updateCartItemsShipping({ body: body });
+    },
+    onSuccess: async () => {
+      notify("success", "Cart Items Updated successfully!");
+      refetchCart();
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      const message = error.response?.data?.message;
+      notify("error", message as string);
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    let cartBody = {
+      ids: cartList?.map((c) => c?._id),
+      shippingDetails: {
+        name: `${values.firstName} ${values.lastName}`,
+        zipcode: values.address.zipcode,
+        country: values.address.country,
+        street: values.address.street,
+        state: values.address.state,
+        city: values.address.city,
+        phoneNum: values.phoneNumber,
+      },
+    };
+
+    let body = {
+      name: `${values.firstName} ${values.lastName}`,
+      zipcode: values.address.zipcode,
+      country: values.address.country,
+      street: values.address.street,
+      state: values.address.state,
+      city: values.address.city,
+      phoneNum: values.phoneNumber,
+    };
+
+    await update({ body: body });
+    await updateCart({ body: cartBody });
+
+    onClose();
   };
+
+  useEffect(() => {
+    if (profileInformation) {
+      // Split name into firstName and lastName
+      const [firstName = "", lastName = ""] =
+        profileInformation.name?.split(" ") || [];
+
+      setValue("firstName", firstName);
+      setValue("lastName", lastName);
+      setValue("phoneNumber", profileInformation.phoneNum || "");
+      setValue("address.street", profileInformation.street || "");
+      setValue("address.zipcode", profileInformation.zipcode || "");
+      setValue("address.city", profileInformation.city || "");
+      setValue("address.state", profileInformation.state || "");
+      setValue("address.country", profileInformation.country || "");
+    }
+  }, [setValue, profileInformation]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[80%] md:max-w-[60%] lg:max-w-[45%]">
         <DialogHeader>
-          <DialogTitle>Add new shipping address</DialogTitle>
+          <DialogTitle>Update shipping address</DialogTitle>
         </DialogHeader>
 
         {/* form */}
@@ -195,8 +316,9 @@ const AddNewShippingAddress = ({ isOpen, onClose }: Props) => {
                 Cancel
               </Button>
 
-              <Button type="submit" onClick={onClose}>
-                Add address
+              <Button type="submit" disabled={isPending || isUpdateCartPending}>
+                {(isPending || isUpdateCartPending) && <LoadingSpinner />}{" "}
+                Update address
               </Button>
             </DialogFooter>
           </form>

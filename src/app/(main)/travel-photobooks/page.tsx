@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Questions from "@/components/questions";
 import CreatePhotoBookSteps from "@/components/create-photobook-steps";
 import Reviews from "@/components/reviews";
@@ -18,18 +18,74 @@ import PreFooter from "@/components/pre-footer";
 import BeautifulMoments from "@/components/beautiful-moments";
 import { useRouter } from "next/navigation";
 import useNumberFormatter from "@/utils/useNumberFormatter";
+import { useQuery } from "@tanstack/react-query";
+import {
+  fetchProductList,
+  fetchTemplateList,
+} from "@/services/product-services";
+import { photoBookStore } from "@/store";
+import { useStore } from "zustand";
 
 const TravelPhotoBook = () => {
   const { push } = useRouter();
   const { formatNumber } = useNumberFormatter();
+  // const productId = useStore(photoBookStore, (state) => state.productId);
+  const setProductId = useStore(photoBookStore, (state) => state.setProductId);
+  const setTemplate = useStore(photoBookStore, (state) => state.setTemplateId);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["fetchProducts"],
+    queryFn: async () => {
+      try {
+        const response = await fetchProductList();
+        return response?.data;
+      } catch (error) {
+        console.error(error);
+        throw error; // Rethrow the error so React Query can handle it.
+      }
+    },
+  });
+
+  const { data: templatesList } = useQuery({
+    queryKey: ["fetchTemplates"],
+    queryFn: async () => {
+      try {
+        const response = await fetchTemplateList();
+        return response?.data;
+      } catch (error) {
+        console.error(error);
+        throw error; // Rethrow the error so React Query can handle it.
+      }
+    },
+  });
 
   const [selectedPage, setSelectedPage] = useState<{
-    id: string;
-    page: number;
+    _id: string;
+    pageCount: number;
     price: number;
-  }>(pages[0]);
+  }>(data?.[0]);
 
-  console.log(selectedPage);
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    _id: string;
+    frontCover: string;
+    fullCover: string;
+    name: string;
+    isDeleted: boolean;
+  }>(data?.[0]);
+
+  useEffect(() => {
+    setProductId(selectedPage?._id);
+    setTemplate({
+      frontCoverUrl: selectedTemplate?.frontCover,
+      fullCoverUrl: selectedTemplate?.fullCover,
+    });
+  }, [selectedPage]);
+
+  // console.log({ selectedPage, productId });
+  // console.log({ templatesList });
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading products.</p>;
 
   return (
     <div className="flex flex-col font-hagrid">
@@ -49,18 +105,18 @@ const TravelPhotoBook = () => {
             </h2>
 
             <h5 className="flex gap-3 items-center font-bold text-lg">
-              {selectedPage?.page} Pages for N
-              {formatNumber(selectedPage?.price)}
+              {selectedPage?.pageCount || 0} Pages for N
+              {formatNumber(selectedPage?.price || 0)}
               <span className="font-normal line-through">
-                N{formatNumber(0.5 * selectedPage?.price)}
+                N
+                {selectedPage?.price
+                  ? formatNumber(selectedPage?.price * 2)
+                  : formatNumber(0)}
               </span>
               <span className="bg-black text-white px-3 py-[2px] rounded-[36px]">
                 50% off
               </span>
             </h5>
-            {/* <p className="text-xs text-[#6e6d6b]">
-            After that just $0.99 per page
-          </p> */}
 
             <p className="py-6 my-6 border-y border-dashed border-[#6e6d6b]">
               Choose your template or start from scratch, and design your custom
@@ -72,7 +128,14 @@ const TravelPhotoBook = () => {
               Choose your cover template or start from scratch
             </p>
 
-            <Select>
+            <Select
+              onValueChange={(value) =>
+                setSelectedTemplate(
+                  templatesList?.find((p) => p?._id === value) ||
+                    templatesList[0]
+                )
+              }
+            >
               <SelectTrigger className="flex justify-center border-[2px] py-5 px-[56px] min-h-[68px] focus:outline-none focus:ring-0 rounded-md border-black">
                 <SelectValue
                   className="text-base lg:text-lg font-bold font-hagrid"
@@ -80,12 +143,18 @@ const TravelPhotoBook = () => {
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  className="text-base lg:text-lg font-bold font-hagrid"
-                  value="dubai"
-                >
-                  Dubai 1
-                </SelectItem>
+                {templatesList &&
+                  templatesList?.map((t) => {
+                    return (
+                      <SelectItem
+                        key={t?._id}
+                        className="text-base lg:text-lg font-bold capitalize font-hagrid"
+                        value={t?._id}
+                      >
+                        {t?.name}
+                      </SelectItem>
+                    );
+                  })}
               </SelectContent>
             </Select>
 
@@ -95,7 +164,7 @@ const TravelPhotoBook = () => {
 
             <Select
               onValueChange={(value) =>
-                setSelectedPage(pages?.find((p) => p?.id === value) || pages[0])
+                setSelectedPage(data?.find((p) => p?._id === value) || data[0])
               }
             >
               <SelectTrigger className="flex justify-center border-[2px] py-5 px-[56px] min-h-[68px] focus:outline-none focus:ring-0 rounded-md border-black">
@@ -105,24 +174,25 @@ const TravelPhotoBook = () => {
                 />
               </SelectTrigger>
               <SelectContent>
-                {pages.map((page) => {
-                  return (
-                    <SelectItem
-                      key={page?.id}
-                      className="text-base lg:text-lg font-bold font-hagrid"
-                      value={page?.id}
-                    >
-                      {page?.page} Pages
-                    </SelectItem>
-                  );
-                })}
+                {data &&
+                  data?.map((p) => {
+                    return (
+                      <SelectItem
+                        key={p?._id}
+                        className="text-base lg:text-lg font-bold font-hagrid"
+                        value={p?._id}
+                      >
+                        {p?.pageCount} Pages
+                      </SelectItem>
+                    );
+                  })}
               </SelectContent>
             </Select>
 
             <Button
               onClick={() => {
                 push(
-                  `/travel-photobooks/select-photos?pages=${selectedPage?.page}`
+                  `/travel-photobooks/select-photos?pages=${selectedPage?.pageCount}`
                 );
               }}
               variant="outline"

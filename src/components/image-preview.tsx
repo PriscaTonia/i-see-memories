@@ -2,14 +2,15 @@ import React from "react";
 import Image from "next/image";
 
 interface Props {
-  images: File[];
+  images: { file: File; pageNo: number }[];
 }
 
 const ImageBookPreview = ({ images }: Props) => {
   // Split images into pairs for left and right pages, starting from Page 2 onward
   const imagesWithoutFirst = images.slice(1);
 
-  const pages = [];
+  const pages: { file: File; pageNo: number }[][] = [];
+
   for (let i = 0; i < imagesWithoutFirst.length; i += 2) {
     pages.push([imagesWithoutFirst[i], imagesWithoutFirst[i + 1]]);
   }
@@ -51,14 +52,14 @@ const ImageBookPreview = ({ images }: Props) => {
           <div className="w-[120px] h-[120px] bg-gray-100 flex items-center justify-center rounded-md shadow-md">
             <p className="text-center text-xs">Inside Front Cover</p>
           </div>
-          <p className="text-center text-xs mt-2">Page 1</p>
+          {/* <p className="text-center text-xs mt-2">Page 1</p> */}
         </div>
 
         {/* Page 2 - First image */}
         <div className="flex flex-col items-center py-2">
           {images[0] ? (
             <Image
-              src={URL.createObjectURL(images[0])}
+              src={URL.createObjectURL(images[0].file)}
               alt="Page 2"
               width={120}
               height={120}
@@ -69,7 +70,7 @@ const ImageBookPreview = ({ images }: Props) => {
               <p className="text-center text-xs">Page not available</p>
             </div>
           )}
-          <p className="text-center text-xs mt-2">Page 2</p>
+          <p className="text-center text-xs mt-2">Page {images[0].pageNo}</p>
         </div>
       </div>
 
@@ -80,8 +81,8 @@ const ImageBookPreview = ({ images }: Props) => {
           <div className="flex flex-col items-center py-2">
             {page[0] ? (
               <Image
-                src={URL.createObjectURL(page[0])}
-                alt={`Page ${index * 2 + 3}`}
+                src={URL.createObjectURL(page[0].file)}
+                alt={`Page ${page[0].pageNo}`}
                 width={120}
                 height={120}
                 className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
@@ -91,15 +92,15 @@ const ImageBookPreview = ({ images }: Props) => {
                 <p className="text-center text-xs">Page not available</p>
               </div>
             )}
-            <p className="text-center text-xs mt-2">Page {index * 2 + 3}</p>
+            <p className="text-center text-xs mt-2">Page {page[0].pageNo}</p>
           </div>
 
           {/* Right page in the spread */}
           <div className="flex flex-col items-center py-2">
             {page[1] ? (
               <Image
-                src={URL.createObjectURL(page[0])}
-                alt={`Page ${index * 2 + 4}`}
+                src={URL.createObjectURL(page[1].file)}
+                alt={`Page ${page[1].pageNo}`}
                 width={120}
                 height={120}
                 className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
@@ -109,7 +110,9 @@ const ImageBookPreview = ({ images }: Props) => {
                 <p className="text-center text-xs">Inside Back Cover</p>
               </div>
             )}
-            <p className="text-center text-xs mt-2">Page {index * 2 + 4}</p>
+            {page[1] ? (
+              <p className="text-center text-xs mt-2">Page {page[1]?.pageNo}</p>
+            ) : null}
           </div>
         </div>
       ))}

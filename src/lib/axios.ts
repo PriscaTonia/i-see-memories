@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 
 // Create Axios instance
@@ -8,8 +9,10 @@ const AXIOS = axios.create({
 
 // Request Interceptor
 AXIOS.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
+  async (config) => {
+    const session = await getSession();
+
+    const token = session.user.jwt;
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -36,10 +39,6 @@ AXIOS.interceptors.response.use(
   (response) => response,
   (error) => {
     // Handle response errors
-    const message =
-      error.response?.data?.message ||
-      "Something went wrong. Please try again.";
-    toast.error(message);
     return Promise.reject(error);
   }
 );

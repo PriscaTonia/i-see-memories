@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 import { notify } from "@/lib/notify";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "@/services/auth-services";
-import { Loader2 } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 // Form schema with validation
 const formSchema = z
@@ -51,8 +51,7 @@ const SignUp = () => {
     },
   });
 
-  //@ts-expect-error error
-  const { mutate: register, isLoading } = useMutation({
+  const { mutate: register, isPending } = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
       return await registerUser(data);
     },
@@ -60,14 +59,11 @@ const SignUp = () => {
       notify("success", "Registration successful!");
       push("/auth/sign-in");
     },
-    onError: (error: AxiosError) => {
-      console.log(error);
-
+    onError: (error: AxiosError<{ message: string }>) => {
       const message =
-        // @ts-expect-error error
         error.response?.data?.message ||
         "An error occurred during registration.";
-      notify("error", message);
+      notify("error", message as string);
     },
   });
 
@@ -151,11 +147,11 @@ const SignUp = () => {
             />
 
             <Button
-              disabled={isLoading}
+              disabled={isPending}
               type="submit"
               className="col-span-1 lg:col-span-2"
             >
-              {isLoading && <Loader2 className="animate-spin" />} Create Account
+              {isPending && <LoadingSpinner />} Create Account
             </Button>
           </form>
         </Form>

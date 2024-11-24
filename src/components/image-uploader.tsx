@@ -96,17 +96,18 @@ const ImageUploader = ({ max_num_page, images, setImages }: Props) => {
     });
 
     // Filter out SVG files based on MIME type and show a toast
-    const nonSvgFiles = acceptedFiles.filter(
+    const nonSvgFiles = validFiles.filter(
       (file) => file.type !== "image/svg+xml"
     );
-    if (acceptedFiles.length !== nonSvgFiles.length) {
+
+    if (validFiles.length !== nonSvgFiles.length) {
       notify("error", "SVG files are not allowed.");
     }
 
     // Add only up to the max limit
     setImages((prevImages) => [
       ...prevImages,
-      ...validFiles.slice(0, max_num_page - prevImages.length),
+      ...nonSvgFiles.slice(0, max_num_page - prevImages.length),
     ]);
   };
 

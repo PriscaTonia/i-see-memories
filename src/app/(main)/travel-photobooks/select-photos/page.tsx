@@ -12,6 +12,10 @@ import { photoBookStore } from "@/store";
 const SelectPhotos = () => {
   const { push } = useRouter();
   const [images, setImages] = useState<File[]>([]);
+  const [imageThings, setimageThings] = useState<
+    { file: File; pageNo: number }[]
+  >([]);
+
   const [view, setView] = useState<string>("image-upload");
 
   const searchParams = useSearchParams();
@@ -36,6 +40,11 @@ const SelectPhotos = () => {
       setImages(photoBook);
     }
   }, [photoBook]);
+
+  useEffect(() => {
+    const imageThings = images.map((x, i) => ({ file: x, pageNo: i + 1 }));
+    setimageThings(imageThings);
+  }, [images]);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -82,7 +91,7 @@ const SelectPhotos = () => {
               )}
             </div>
 
-            {view === "preview" && <ImageBookPreview images={images} />}
+            {view === "preview" && <ImageBookPreview images={imageThings} />}
 
             {view === "image-upload" && (
               <ImageUploader

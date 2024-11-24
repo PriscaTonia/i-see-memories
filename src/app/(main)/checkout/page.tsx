@@ -1,11 +1,19 @@
 "use client";
-import ShippingAddressModal from "@/components/shipping-address-modal";
+import AddNewShippingAddress from "@/components/add-new-shipping-address";
+// import ShippingAddressModal from "@/components/shipping-address-modal";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { notify } from "@/lib/notify";
+import { fetchCartList } from "@/services/cart-services";
+import { fetchProfileInfo } from "@/services/profile-services";
+import { userStore } from "@/store";
 import useNumberFormatter from "@/utils/useNumberFormatter";
-import { MoveRight, Pencil } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { MoveRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { Fragment, useState } from "react";
+import { useStore } from "zustand";
 
 const CheckoutPage = () => {
   const { formatNumber } = useNumberFormatter();
@@ -15,6 +23,54 @@ const CheckoutPage = () => {
 
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
+
+  const userId = useStore(userStore, (state) => state.userId);
+
+  // getting cart
+  const {
+    data: cartList,
+    refetch: refetchCart,
+    isLoading: isCartLoading,
+  } = useQuery({
+    queryKey: ["fetchCart"],
+    queryFn: async () => {
+      try {
+        const response = await fetchCartList();
+        return response?.data;
+      } catch (error) {
+        console.error(error);
+        throw error; // Rethrow the error so React Query can handle it.
+      }
+    },
+  });
+  const totalPrice = cartList?.reduce((acc, item) => acc + item.price, 0) || 0;
+
+  // getting the profile info
+  const {
+    data: profileInformation,
+    refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["fetchProfile", userId],
+    queryFn: async () => {
+      try {
+        const response = await fetchProfileInfo({ id: userId });
+        return response?.data;
+      } catch (error) {
+        console.error(error);
+        throw error; // Rethrow the error so React Query can handle it.
+      }
+    },
+  });
+
+  const isShippingAvailable =
+    profileInformation?.name &&
+    profileInformation?.state &&
+    profileInformation?.city &&
+    profileInformation?.street &&
+    profileInformation?.phoneNum;
+
+  // console.log(profileInformation);
 
   return (
     <Fragment>
@@ -28,15 +84,50 @@ const CheckoutPage = () => {
             <div className="col-span-1 flex flex-col gap-3 border rounded p-5">
               <h3 className="font-bold flex justify-between w-full text-xl text-[#43464E]">
                 Shipping Address
-                <span className="cursor-pointer" onClick={openDialog}>
-                  <Pencil />
-                </span>
+                <Button
+                  onClick={openDialog}
+                  className="text-[#F1F0ED] bg-black border-black hover:bg-[#F1F0ED] hover:text-[#000000] rounded-md font-bold text-lg py-5 px-10"
+                >
+                  Edit
+                </Button>
               </h3>
 
-              <p className="text-sm text-[#43464E]">Prisca Tonia</p>
-              <p className="text-sm text-[#43464E]">400104</p>
-              <p className="text-sm text-[#43464E]">Enugu</p>
-              <p className="text-sm text-[#43464E]">09012332415</p>
+              {isLoading ? (
+                <div className="min-h-[200px]">
+                  <LoadingSpinner />
+                </div>
+              ) : (
+                <Fragment>
+                  <p className="text-sm text-[#43464E]">
+                    {" "}
+                    Name: {profileInformation?.name || "-"}
+                  </p>
+                  <p className="text-sm text-[#43464E]">
+                    {" "}
+                    Email: {profileInformation?.email || "-"}
+                  </p>
+                  <p className="text-sm text-[#43464E]">
+                    {" "}
+                    Zipcode: {profileInformation?.zipcode || "-"}
+                  </p>
+                  <p className="text-sm text-[#43464E]">
+                    {" "}
+                    Street: {profileInformation?.street || "-"}
+                  </p>
+                  <p className="text-sm text-[#43464E]">
+                    {" "}
+                    State: {profileInformation?.state || "-"}
+                  </p>
+                  <p className="text-sm text-[#43464E]">
+                    {" "}
+                    Country: {profileInformation?.country || "-"}
+                  </p>
+                  <p className="text-sm text-[#43464E]">
+                    {" "}
+                    Phone: {profileInformation?.phoneNum || "-"}
+                  </p>
+                </Fragment>
+              )}
             </div>
 
             {/* shipping methods */}
@@ -59,34 +150,44 @@ const CheckoutPage = () => {
                 Items
               </h3>
 
-              <div className="flex gap-5">
-                {/* item image */}
-                <Image
-                  src="/cart_item.png"
-                  alt="Cart item image"
-                  width={100}
-                  height={80}
-                />
+              {isCartLoading && <LoadingSpinner />}
 
-                {/* item details */}
-                <div className="flex flex-col">
-                  <h3 className="font-bold flex flex-col text-base text-[#43464E]">
-                    Custom Photobook
-                    <span className="flex gap-2 items-center">
-                      <span className="font-normal line-through">
-                        N{formatNumber(69)}
-                      </span>
-                      <span className="font-normal">N{formatNumber(30)}</span>
-                    </span>
-                  </h3>
+              {!isCartLoading &&
+                cartList?.length > 0 &&
+                cartList?.map((item) => {
+                  return (
+                    <div key={item?._id} className="flex gap-5">
+                      {/* item image */}
+                      <Image
+                        src={item?.frontCoverUrl}
+                        alt="Cart item image"
+                        width={100}
+                        height={80}
+                      />
 
-                  <p className="text-sm  mt-4">Cover Type: Hardcover</p>
-                  <p className="text-sm ">
-                    Size: 11.5&apos;&apos; x 8.5&apos;&apos; Vertical
-                  </p>
-                  <p className="text-sm ">Paper Finish: Gloss Paper</p>
-                </div>
-              </div>
+                      {/* item details */}
+                      <div className="flex flex-col">
+                        <h3 className="font-bold flex flex-col text-base text-[#43464E]">
+                          Custom Photobook
+                          <span className="flex gap-2 items-center">
+                            <span className="font-normal line-through">
+                              N{formatNumber(item?.price * 2)}
+                            </span>
+                            <span className="font-normal">
+                              N{formatNumber(item?.price)}
+                            </span>
+                          </span>
+                        </h3>
+
+                        <p className="text-sm  mt-4">Cover Type: Hardcover</p>
+                        <p className="text-sm ">
+                          Size: 11.5&apos;&apos; x 8.5&apos;&apos; Vertical
+                        </p>
+                        <p className="text-sm ">Paper Finish: Gloss Paper</p>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
 
             {/* summary */}
@@ -100,15 +201,17 @@ const CheckoutPage = () => {
 
                 <span className="flex gap-2 items-center">
                   <span className="font-normal line-through">
-                    N{formatNumber(115000)}
+                    N{formatNumber(totalPrice * 2)}
                   </span>
-                  <span className="font-normal">N{formatNumber(62000)}</span>
+                  <span className="font-normal">
+                    N{formatNumber(totalPrice)}
+                  </span>
                 </span>
               </p>
 
               <p className="flex text-sm lg:text-base justify-between items-center">
                 <span className="text-xs lg:text-sm">Discount:</span>
-                <span className="font-normal">N{formatNumber(0)}</span>
+                <span className="font-normal">N{formatNumber(totalPrice)}</span>
               </p>
 
               <p className="flex text-sm lg:text-base justify-between items-center">
@@ -118,7 +221,16 @@ const CheckoutPage = () => {
             </div>
 
             <Button
-              onClick={() => push("/checkout")}
+              onClick={() => {
+                if (!isShippingAvailable) {
+                  notify(
+                    "error",
+                    "Please make sure to fill in all shipping details"
+                  );
+                  return;
+                }
+                push("/checkout");
+              }}
               className="flex gap-2 items-center py-4 px-8 text-sm mt-5"
             >
               Place order <MoveRight />
@@ -128,7 +240,14 @@ const CheckoutPage = () => {
       </div>
 
       {/* Dialog */}
-      <ShippingAddressModal isOpen={isDialogOpen} onClose={closeDialog} />
+      <AddNewShippingAddress
+        refetch={refetch}
+        refetchCart={refetchCart}
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
+        profileInformation={profileInformation}
+        cartList={cartList}
+      />
     </Fragment>
   );
 };

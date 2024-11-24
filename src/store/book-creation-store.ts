@@ -3,13 +3,26 @@ import { createStore } from "zustand/vanilla";
 
 export type PhotoBookState = {
   photoBook: File[];
-  orderNo: number;
+  quantity: number;
+  productId: string;
+  template: {
+    fullCoverUrl: string;
+    frontCoverUrl: string;
+  };
 };
 
 export type PhotoBookActions = {
   updatePhotoBooks: (newImages: File[]) => void; // Accepts new images as an argument
-  incrementOrderNo: () => void;
-  decrementOrderNo: () => void;
+  incrementQuantity: () => void;
+  decrementQuantity: () => void;
+  setProductId: (id: string) => void;
+  setTemplateId: ({
+    fullCoverUrl,
+    frontCoverUrl,
+  }: {
+    fullCoverUrl: string;
+    frontCoverUrl: string;
+  }) => void;
 };
 
 export type PhotoBookStore = PhotoBookState & PhotoBookActions;
@@ -17,7 +30,12 @@ export type PhotoBookStore = PhotoBookState & PhotoBookActions;
 // Initial state for the photo book
 export const defaultInitState: PhotoBookState = {
   photoBook: [],
-  orderNo: 0,
+  quantity: 1,
+  productId: "",
+  template: {
+    fullCoverUrl: "",
+    frontCoverUrl: "",
+  },
 };
 
 // Function to create the Zustand store
@@ -30,9 +48,17 @@ export const createPhotoBookStore = (
     updatePhotoBooks: (newImages: File[]) => set({ photoBook: newImages }), // Directly set new images
 
     // Increment the orderNo by 1
-    incrementOrderNo: () => set((state) => ({ orderNo: state.orderNo + 1 })),
+    incrementQuantity: () => set((state) => ({ quantity: state.quantity + 1 })),
 
     // Decrement the orderNo by 1
-    decrementOrderNo: () => set((state) => ({ orderNo: state.orderNo - 1 })),
+    decrementQuantity: () => set((state) => ({ quantity: state.quantity - 1 })),
+
+    // set product id and template object
+    setProductId: (id: string) => set((state) => ({ ...state, productId: id })),
+    setTemplateId: ({ fullCoverUrl, frontCoverUrl }) =>
+      set((state) => ({
+        ...state,
+        template: { fullCoverUrl, frontCoverUrl },
+      })),
   }));
 };

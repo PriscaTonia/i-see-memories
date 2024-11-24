@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  // FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,12 +17,10 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { loginUser } from "@/services/auth-services";
 import { notify } from "@/lib/notify";
-import { AxiosError } from "axios";
-import { Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import Cookies from "js-cookie";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -43,34 +40,25 @@ const SignIn = () => {
     },
   });
 
-  //@ts-expect-error error
-  const { mutate: login, isLoading } = useMutation({
+  const { mutate: login, isPending } = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
-      return await loginUser(data);
-    },
-    onSuccess: (data) => {
-      // Save JWT to localStorage
-      const token = data?.data?.jwt;
+      const res = await signIn("credentials", {
+        ...data,
+        redirect: false,
+      });
 
-      console.log(token);
-
-      if (token) {
-        // Store token in cookies
-        Cookies.set("token", token, { expires: 7, path: "" });
-        notify("success", "Login successful!");
-        push("/account/profile-settings");
-      } else {
-        notify("error", "Failed to retrieve token. Please try again.");
+      if (res.status !== 200) {
+        throw JSON.parse(res.error);
       }
-    },
-    onError: (error: AxiosError) => {
-      console.log(error);
 
-      const message =
-        // @ts-expect-error error
-        error.response?.data?.message ||
-        "An error occurred during registration.";
-      notify("error", message);
+      return res;
+    },
+    onSuccess: async (data) => {
+      notify("success", "Login successful!");
+      push("/account/profile-settings");
+    },
+    onError: (error: { data: unknown; message: string }) => {
+      notify("error", error.message);
     },
   });
 
@@ -131,9 +119,8 @@ const SignIn = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={isLoading} type="submit">
-              {isLoading && <Loader2 className="animate-spin w-5 h-5" />} Sign
-              In
+            <Button disabled={isPending} type="submit">
+              {isPending && <LoadingSpinner />} Sign In
             </Button>
           </form>
         </Form>
