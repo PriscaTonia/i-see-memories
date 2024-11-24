@@ -125,9 +125,9 @@ const SignIn = () => {
           </form>
         </Form>
 
-        <Link href="/" className="underline mt-3 text-sm">
+        {/* <Link href="/" className="underline mt-3 text-sm">
           Forgot password?
-        </Link>
+        </Link> */}
         <Link href="/auth/sign-up" className="underline mt-3 text-sm">
           Don&apos;t have an account? Sign Up Now.
         </Link>

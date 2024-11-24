@@ -2,13 +2,13 @@
 
 import EmptyCartView from "@/components/empty-cart-view";
 import PreFooter from "@/components/pre-footer";
-import { photoBookStore } from "@/store";
+// import { photoBookStore } from "@/store";
 import { Add, Minus } from "iconsax-react";
 import useNumberFormatter from "@/utils/useNumberFormatter";
 import { MoveRight, Trash2 } from "lucide-react";
 import Image from "next/image";
-import React from "react";
-import { useStore } from "zustand";
+import React, { useEffect, useState } from "react";
+// import { useStore } from "zustand";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -20,6 +20,8 @@ import {
 import { AxiosError } from "axios";
 import { notify } from "@/lib/notify";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { createCartItem } from "@/services/order-services";
+import clsx from "clsx";
 
 const CartPage = () => {
   const { formatNumber } = useNumberFormatter();
@@ -42,20 +44,19 @@ const CartPage = () => {
     },
   });
 
-  // update cart quantity
-  const { mutate: update, isPending } = useMutation({
-    mutationFn: async ({
-      id,
-      body,
-    }: {
-      id: string;
-      body: { quantity: number };
-    }) => {
-      return await updateCartItemQuantity({ id, body });
+  const { mutate: updateCart, isPending } = useMutation({
+    mutationFn: async (
+      items: {
+        productId: string;
+        fullCoverUrl: string;
+        frontCoverUrl: string;
+        quantity: number;
+      }[]
+    ) => {
+      return await createCartItem(items);
     },
     onSuccess: async () => {
-      notify("success", "Order Updated successfully!");
-      refetch();
+      notify("success", "Cart updated successfully!");
     },
     onError: (error: AxiosError<{ message: string }>) => {
       const message = error.response?.data?.message;
@@ -63,42 +64,81 @@ const CartPage = () => {
     },
   });
 
-  // delete a cart item
-  const { mutate: deleteItem, isPending: isDeleting } = useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      return await deleteCartItem({ id });
-    },
-    onSuccess: async () => {
-      notify("success", "Order Deleted successfully!");
-      refetch();
-    },
-    onError: (error: AxiosError<{ message: string }>) => {
-      const message = error.response?.data?.message;
-      notify("error", message as string);
-    },
-  });
+  const [cartState, setCartState] = useState(cartList?.items || []);
+  const [id, setId] = useState("");
 
-  const totalPrice = cartList?.reduce((acc, item) => acc + item.price, 0) || 0;
+  // update quantity
+  const handleQuantityChange = (itemId, newQuantity) => {
+    setId(itemId);
 
-  // console.log(cartList);
+    const updatedCart = cartState.map((item) =>
+      item._id === itemId ? { ...item, quantity: newQuantity } : item
+    );
+
+    setCartState(updatedCart);
+
+    // Call the mutation with the updated cart
+    updateCart(
+      updatedCart?.map((c) => ({
+        productId: c?.productId?._id,
+        fullCoverUrl: c?.fullCoverUrl,
+        frontCoverUrl: c?.frontCoverUrl,
+        quantity: c?.quantity,
+      }))
+    );
+
+    setId("");
+  };
+
+  const handleDeleteItem = (itemId) => {
+    setId(itemId);
+    const updatedCart = cartState.filter((item) => item._id !== itemId);
+    setCartState(updatedCart); // Update local state immediately
+
+    // Call the delete mutation
+    updateCart(
+      updatedCart?.map((c) => ({
+        productId: c?.productId?._id,
+        fullCoverUrl: c?.fullCoverUrl,
+        frontCoverUrl: c?.frontCoverUrl,
+        quantity: c?.quantity,
+      }))
+    );
+    setId("");
+  };
+
+  const totalPrice =
+    cartState?.reduce(
+      (acc, item) => acc + item?.productId?.price * item?.quantity,
+      0
+    ) || 0;
+
+  useEffect(() => {
+    setCartState(cartList?.items);
+  }, [cartList?.items]);
+
+  // console.log(cartState);
 
   return (
     <div className="flex flex-col gap-6 p-6 lg:p-10 min-h-[60vh] font-hagrid container">
-      <h1 className="font-bold text-[26px]">Cart</h1>
+      <h1 className="font-bold text-[26px] w-full flex justify-between">
+        Cart <span>{isPending && <LoadingSpinner />}</span>
+      </h1>
 
       {isLoading && (
         <div className="min-h-[200px] flex items-center justify-center">
           <LoadingSpinner />
         </div>
       )}
-      {/* empty cart view */}
-      {cartList?.length < 1 && <EmptyCartView />}
 
-      {cartList?.length > 0 && (
+      {/* empty cart view */}
+      {!isLoading && cartState?.length < 1 && <EmptyCartView />}
+
+      {cartState?.length > 0 && (
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 mb-5">
           {/* cart */}
           <div className="flex flex-col gap-3 col-span-1 lg:col-span-2">
-            {cartList?.map((item) => {
+            {cartState?.map((item) => {
               return (
                 <div
                   key={item?._id}
@@ -118,10 +158,16 @@ const CartPage = () => {
                       {item?.name}
                       <span className="flex gap-2 items-center">
                         <span className="font-normal line-through">
-                          N{formatNumber(item?.price * 2 || 0)}
+                          N
+                          {formatNumber(
+                            item?.productId?.price * item?.quantity * 2 || 0
+                          )}
                         </span>
                         <span className="font-normal">
-                          N{formatNumber(item?.price || 0)}
+                          N
+                          {formatNumber(
+                            item?.productId?.price * item?.quantity || 0
+                          )}
                         </span>
                       </span>
                     </h3>
@@ -139,14 +185,12 @@ const CartPage = () => {
 
                   {/* buttons */}
                   <div className="flex flex-col justify-between items-end">
-                    {isDeleting ? (
-                      <LoadingSpinner />
-                    ) : (
-                      <Trash2
-                        onClick={() => deleteItem({ id: item?._id })}
-                        className="cursor-pointer"
-                      />
-                    )}
+                    <button
+                      disabled={isPending}
+                      onClick={() => handleDeleteItem(item?._id)}
+                    >
+                      <Trash2 className="cursor-pointer" />
+                    </button>
 
                     <div className="flex items-center border-2 border-black rounded-md ">
                       <button
@@ -156,28 +200,32 @@ const CartPage = () => {
                               "error",
                               "Cart item cannot be less than 1"
                             );
-                          let body = {
-                            quantity: item?.quantity - 1,
-                          };
-                          update({ id: item?._id, body: body });
+                          handleQuantityChange(item?._id, item?.quantity - 1);
                         }}
                         disabled={isPending}
-                        className="p-3"
+                        className={clsx(
+                          "p-3",
+                          isPending && "cursor-not-allowed"
+                        )}
                       >
                         <Minus size="20" color="#000000" />
                       </button>
                       <p className="p-3 font-bold">
-                        {isPending ? <LoadingSpinner /> : item?.quantity}
+                        {isPending && id === item?._id ? (
+                          <LoadingSpinner />
+                        ) : (
+                          item?.quantity
+                        )}
                       </p>
                       <button
                         onClick={() => {
-                          let body = {
-                            quantity: item?.quantity + 1,
-                          };
-                          update({ id: item?._id, body: body });
+                          handleQuantityChange(item?._id, item?.quantity + 1);
                         }}
                         disabled={isPending}
-                        className="p-3"
+                        className={clsx(
+                          "p-3",
+                          isPending && "cursor-not-allowed"
+                        )}
                       >
                         <Add size="20" color="#000000" />
                       </button>

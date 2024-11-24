@@ -5,17 +5,24 @@ export const fetchProfileInfo = async ({ id }: { id: string }) => {
   return res.data;
 };
 
+export const createPayment = async () => {
+  const res = await AXIOS.post(`users/place-order`);
+  return res.data;
+};
+
 export const updateProfile = async ({
   body,
 }: {
   body: {
-    name: string;
-    zipcode: string;
-    country: string;
-    street: string;
-    state: string;
-    city: string;
-    phoneNum: string;
+    email?: string;
+    name?: string;
+    zipcode?: string;
+    country?: string;
+    street?: string;
+    state?: string;
+    city?: string;
+    phoneNum?: string;
+    password?: string;
   };
 }) => {
   const res = await AXIOS.patch(`users/profile`, body);

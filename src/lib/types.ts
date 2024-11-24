@@ -11,24 +11,38 @@ export interface Profile {
   zipcode: string;
 }
 
-export interface CartItem {
+export interface CartList {
   shippingDetails: ShippingDetails;
   _id: string;
-  productId: string;
+  userId: string;
+  status: string;
+  __v: number;
+  items: Item[];
+  paymentStatus: null;
+}
+
+export interface Item {
+  productId: ProductID;
   frontCoverUrl: string;
   fullCoverUrl: string;
   quantity: number;
+  _id: string;
+}
+
+export interface ProductID {
+  _id: string;
+  pageCount: string;
   price: number;
-  userId: string;
-  status: string;
+  isDeleted: boolean;
   __v: number;
 }
 
 export interface ShippingDetails {
-  name: string;
+  city: string;
   country: string;
+  name: string;
+  phoneNum: string;
   state: string;
   street: string;
   zipcode: string;
-  city: string;
 }

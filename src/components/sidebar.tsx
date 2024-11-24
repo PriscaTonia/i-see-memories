@@ -102,9 +102,9 @@ export const sidebarLinks = [
     title: "Orders History",
     path: "/account/order-history",
   },
-  {
-    id: 4,
-    title: "My Addresses",
-    path: "/account/addresses",
-  },
+  // {
+  //   id: 4,
+  //   title: "My Addresses",
+  //   path: "/account/addresses",
+  // },
 ];

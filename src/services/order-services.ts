@@ -1,11 +1,13 @@
 import AXIOS from "@/lib/axios";
 
-export const createOrder = async (data: {
-  productId: string;
-  fullCoverUrl: string;
-  frontCoverUrl: string;
-  quantity: number;
-}) => {
-  const res = await AXIOS.post(`orders`, data);
+export const createCartItem = async (
+  items: {
+    fullCoverUrl: string;
+    frontCoverUrl: string;
+    productId: string;
+    quantity: number;
+  }[]
+) => {
+  const res = await AXIOS.post(`users/cart`, items);
   return res.data;
 };

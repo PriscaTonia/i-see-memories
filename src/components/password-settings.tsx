@@ -14,6 +14,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Profile } from "@/lib/types";
+import { LoadingSpinner } from "./ui/loading-spinner";
+import { logoutUser } from "@/lib/logout";
+import { useRouter } from "next/navigation";
 
 // Form schema with validation
 const passwordSchema = z
@@ -33,7 +37,21 @@ const passwordSchema = z
     path: ["confirmPassword"],
   });
 
-const UpdatePasswordForm = () => {
+interface Props {
+  isPending: boolean;
+  update: any;
+  profileInformation: Profile;
+  sec: string;
+  setSec: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const UpdatePasswordForm = ({
+  isPending,
+  update,
+  profileInformation,
+  sec,
+  setSec,
+}: Props) => {
   const form = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
@@ -43,8 +61,13 @@ const UpdatePasswordForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof passwordSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
+    setSec("password");
+    let body = {
+      password: values.newPassword,
+    };
+
+    await update({ body: body });
   };
 
   return (
@@ -107,8 +130,8 @@ const UpdatePasswordForm = () => {
         />
 
         <div className="col-span-1 lg:col-span-2">
-          <Button type="submit" className="w-fit">
-            Update
+          <Button disabled={isPending} type="submit" className="w-fit">
+            {isPending && sec === "password" && <LoadingSpinner />} Update
           </Button>
         </div>
       </form>

@@ -25,7 +25,7 @@ import { AxiosError } from "axios";
 import { LoadingSpinner } from "./ui/loading-spinner";
 import { useEffect } from "react";
 import { updateCartItemsShipping } from "@/services/cart-services";
-import { CartItem, Profile } from "@/lib/types";
+import { CartList, Profile } from "@/lib/types";
 
 interface Props {
   isOpen: boolean;
@@ -33,7 +33,7 @@ interface Props {
   refetch: () => void;
   refetchCart: () => void;
   profileInformation: Profile;
-  cartList: CartItem[];
+  cartList: CartList;
 }
 
 // Form schema with validation
@@ -112,24 +112,23 @@ const AddNewShippingAddress = ({
   const { mutate: updateCart, isPending: isUpdateCartPending } = useMutation({
     mutationFn: async ({
       body,
+      orderId,
     }: {
+      orderId: string;
       body: {
-        ids: string[];
-        shippingDetails: {
-          name: string;
-          zipcode: string;
-          country: string;
-          street: string;
-          state: string;
-          city: string;
-          phoneNum: string;
-        };
+        name: string;
+        zipcode: string;
+        country: string;
+        street: string;
+        state: string;
+        city: string;
+        phoneNum: string;
       };
     }) => {
-      return await updateCartItemsShipping({ body: body });
+      return await updateCartItemsShipping({ body, orderId });
     },
     onSuccess: async () => {
-      notify("success", "Cart Items Updated successfully!");
+      notify("success", "Shipping Updated successfully!");
       refetchCart();
     },
     onError: (error: AxiosError<{ message: string }>) => {
@@ -140,8 +139,8 @@ const AddNewShippingAddress = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     let cartBody = {
-      ids: cartList?.map((c) => c?._id),
-      shippingDetails: {
+      orderId: cartList?._id,
+      body: {
         name: `${values.firstName} ${values.lastName}`,
         zipcode: values.address.zipcode,
         country: values.address.country,
@@ -163,7 +162,7 @@ const AddNewShippingAddress = ({
     };
 
     await update({ body: body });
-    await updateCart({ body: cartBody });
+    await updateCart({ body: cartBody.body, orderId: cartBody.orderId });
 
     onClose();
   };

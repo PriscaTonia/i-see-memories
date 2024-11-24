@@ -25,20 +25,22 @@ export const deleteCartItem = async ({ id }: { id: string }) => {
 
 export const updateCartItemsShipping = async ({
   body,
+  orderId,
 }: {
+  orderId: string;
   body: {
-    ids: string[];
-    shippingDetails: {
-      name: string;
-      zipcode: string;
-      country: string;
-      street: string;
-      state: string;
-      city: string;
-      phoneNum: string;
-    };
+    name: string;
+    zipcode: string;
+    country: string;
+    street: string;
+    state: string;
+    city: string;
+    phoneNum: string;
   };
 }) => {
-  const res = await AXIOS.patch(`users/cart/shipping`, body);
+  const res = await AXIOS.patch(
+    `users/order-shipping-details/${orderId}`,
+    body
+  );
   return res.data;
 };

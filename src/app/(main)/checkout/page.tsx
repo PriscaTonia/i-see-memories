@@ -1,19 +1,26 @@
 "use client";
 import AddNewShippingAddress from "@/components/add-new-shipping-address";
-// import ShippingAddressModal from "@/components/shipping-address-modal";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { notify } from "@/lib/notify";
-import { fetchCartList } from "@/services/cart-services";
-import { fetchProfileInfo } from "@/services/profile-services";
+import {
+  fetchCartList,
+  updateCartItemsShipping,
+} from "@/services/cart-services";
+import { createPayment, fetchProfileInfo } from "@/services/profile-services";
 import { userStore } from "@/store";
 import useNumberFormatter from "@/utils/useNumberFormatter";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { MoveRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { Fragment, useState } from "react";
 import { useStore } from "zustand";
+
+const openInNewTab = (url) => {
+  window.open(url, "_blank", "noopener,noreferrer");
+};
 
 const CheckoutPage = () => {
   const { formatNumber } = useNumberFormatter();
@@ -43,7 +50,12 @@ const CheckoutPage = () => {
       }
     },
   });
-  const totalPrice = cartList?.reduce((acc, item) => acc + item.price, 0) || 0;
+
+  const totalPrice =
+    cartList?.items?.reduce(
+      (acc, item) => acc + item?.productId?.price * item?.quantity,
+      0
+    ) || 0;
 
   // getting the profile info
   const {
@@ -58,7 +70,7 @@ const CheckoutPage = () => {
         return response?.data;
       } catch (error) {
         console.error(error);
-        throw error; // Rethrow the error so React Query can handle it.
+        throw error;
       }
     },
   });
@@ -70,7 +82,38 @@ const CheckoutPage = () => {
     profileInformation?.street &&
     profileInformation?.phoneNum;
 
-  // console.log(profileInformation);
+  // creating payment
+  const { mutate: startPayment, isPending: isPaymentPending } = useMutation({
+    mutationFn: async () => {
+      return await createPayment();
+    },
+    onSuccess: async (data) => {
+      notify("success", "Payment initiated successfully!");
+      openInNewTab(data?.data?.authorization_url);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      const message = error.response?.data?.message;
+      notify("error", message as string);
+    },
+  });
+
+  const handlePlaceOrder = async () => {
+    let cartBody = {
+      orderId: cartList?._id,
+      body: {
+        name: profileInformation?.name,
+        zipcode: profileInformation?.zipcode,
+        country: profileInformation?.country,
+        street: profileInformation?.street,
+        state: profileInformation?.state,
+        city: profileInformation?.city,
+        phoneNum: profileInformation?.phoneNumber,
+      },
+    };
+
+    updateCartItemsShipping({ body: cartBody.body, orderId: cartBody.orderId });
+    await startPayment();
+  };
 
   return (
     <Fragment>
@@ -99,31 +142,24 @@ const CheckoutPage = () => {
               ) : (
                 <Fragment>
                   <p className="text-sm text-[#43464E]">
-                    {" "}
                     Name: {profileInformation?.name || "-"}
                   </p>
                   <p className="text-sm text-[#43464E]">
-                    {" "}
                     Email: {profileInformation?.email || "-"}
                   </p>
                   <p className="text-sm text-[#43464E]">
-                    {" "}
                     Zipcode: {profileInformation?.zipcode || "-"}
                   </p>
                   <p className="text-sm text-[#43464E]">
-                    {" "}
                     Street: {profileInformation?.street || "-"}
                   </p>
                   <p className="text-sm text-[#43464E]">
-                    {" "}
                     State: {profileInformation?.state || "-"}
                   </p>
                   <p className="text-sm text-[#43464E]">
-                    {" "}
                     Country: {profileInformation?.country || "-"}
                   </p>
                   <p className="text-sm text-[#43464E]">
-                    {" "}
                     Phone: {profileInformation?.phoneNum || "-"}
                   </p>
                 </Fragment>
@@ -153,8 +189,8 @@ const CheckoutPage = () => {
               {isCartLoading && <LoadingSpinner />}
 
               {!isCartLoading &&
-                cartList?.length > 0 &&
-                cartList?.map((item) => {
+                cartList?.items?.length > 0 &&
+                cartList?.items?.map((item) => {
                   return (
                     <div key={item?._id} className="flex gap-5">
                       {/* item image */}
@@ -171,10 +207,16 @@ const CheckoutPage = () => {
                           Custom Photobook
                           <span className="flex gap-2 items-center">
                             <span className="font-normal line-through">
-                              N{formatNumber(item?.price * 2)}
+                              N
+                              {formatNumber(
+                                item?.productId?.price * item?.quantity * 2
+                              )}
                             </span>
                             <span className="font-normal">
-                              N{formatNumber(item?.price)}
+                              N
+                              {formatNumber(
+                                item?.productId?.price * item?.quantity
+                              )}
                             </span>
                           </span>
                         </h3>
@@ -229,11 +271,13 @@ const CheckoutPage = () => {
                   );
                   return;
                 }
-                push("/checkout");
+
+                handlePlaceOrder();
               }}
+              disabled={isPaymentPending}
               className="flex gap-2 items-center py-4 px-8 text-sm mt-5"
             >
-              Place order <MoveRight />
+              {isPaymentPending && <LoadingSpinner />} Place order <MoveRight />
             </Button>
           </aside>
         </section>

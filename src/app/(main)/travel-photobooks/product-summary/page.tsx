@@ -1,14 +1,14 @@
 "use client";
 import CountDown from "@/components/countdown";
 import PreFooter from "@/components/pre-footer";
-// import ImageCarousel from "@/components/image-carousel";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import AXIOS from "@/lib/axios";
 import { notify } from "@/lib/notify";
-import { createOrder } from "@/services/order-services";
+import { fetchCartList } from "@/services/cart-services";
+import { createCartItem } from "@/services/order-services";
 import { photoBookStore } from "@/store";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import clsx from "clsx";
 import { Add, Minus } from "iconsax-react";
@@ -54,18 +54,34 @@ const ProductSummary = () => {
 
   const [selectedImage, setSelectedImage] = useState<File>(photoBook[0]);
 
+  // getting cart list items
   const {
-    mutate: create,
-    isPending,
-    data,
-  } = useMutation({
-    mutationFn: async (data: {
-      productId: string;
-      fullCoverUrl: string;
-      frontCoverUrl: string;
-      quantity: number;
-    }) => {
-      return await createOrder(data);
+    data: cartList,
+    // refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["fetchCart"],
+    queryFn: async () => {
+      try {
+        const response = await fetchCartList();
+        return response?.data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+  });
+
+  const { mutate: create, isPending } = useMutation({
+    mutationFn: async (
+      items: {
+        productId: string;
+        fullCoverUrl: string;
+        frontCoverUrl: string;
+        quantity: number;
+      }[]
+    ) => {
+      return await createCartItem(items);
     },
     onSuccess: async (data) => {
       const imgPromises = photoBook.map((image, i) => {
@@ -87,12 +103,15 @@ const ProductSummary = () => {
   });
 
   const onSubmit = async () => {
-    const data = {
-      productId: productId,
-      quantity: quantity,
-      frontCoverUrl: template?.frontCoverUrl,
-      fullCoverUrl: template?.fullCoverUrl,
-    };
+    const data = [
+      ...cartList.items,
+      {
+        productId: productId,
+        quantity: quantity,
+        frontCoverUrl: template?.frontCoverUrl,
+        fullCoverUrl: template?.fullCoverUrl,
+      },
+    ];
 
     const res = await create(data);
   };
@@ -267,6 +286,7 @@ const ProductSummary = () => {
                 onClick={() => {
                   onSubmit();
                 }}
+                disabled={isPending}
                 className="text-[#F1F0ED] w-[70%] h-full bg-black border-black hover:bg-[#F1F0ED] hover:text-[#000000] rounded-md font-bold text-lg py-5 px-10"
               >
                 {isPending && <LoadingSpinner />} Add To Cart

@@ -19,14 +19,13 @@ import { LoadingSpinner } from "./ui/loading-spinner";
 
 // profile settings validation validation
 const profileSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required." }),
-  lastName: z.string().min(1, { message: "Last name is required." }),
-  phoneNumber: z
+  street: z.string().min(1, { message: "Street is required." }),
+  zipcode: z
     .string()
-    .regex(/^(\+?\d{1,3})?(\(?\d{1,4}\)?[-.\s]?)?[\d\s-]{7,14}$/, {
-      message: "Invalid phone number.",
-    }),
-  email: z.string().email({ message: "Invalid email address." }),
+    .min(5, { message: "Zipcode must be at least 5 characters." }),
+  city: z.string().min(1, { message: "City is required." }),
+  state: z.string().min(1, { message: "State is required." }),
+  country: z.string().min(1, { message: "Country is required." }),
 });
 
 interface Props {
@@ -37,7 +36,7 @@ interface Props {
   setSec: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const UpdateProfileForm = ({
+const UpdateAddressForm = ({
   isPending,
   update,
   profileInformation,
@@ -47,21 +46,24 @@ const UpdateProfileForm = ({
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      phoneNumber: "",
-      email: "",
+      street: "",
+      zipcode: "",
+      city: "",
+      state: "",
+      country: "",
     },
   });
 
   const { setValue } = form;
 
   const onSubmit = async (values: z.infer<typeof profileSchema>) => {
-    setSec("profile");
+    setSec("address");
     let body = {
-      name: `${values.firstName} ${values.lastName}`,
-      phoneNum: values.phoneNumber,
-      email: values.email,
+      zipcode: values.zipcode,
+      country: values.country,
+      street: values.street,
+      state: values.state,
+      city: values.city,
     };
 
     await update({ body: body });
@@ -73,10 +75,11 @@ const UpdateProfileForm = ({
       const [firstName = "", lastName = ""] =
         profileInformation.name?.split(" ") || [];
 
-      setValue("firstName", firstName);
-      setValue("lastName", lastName);
-      setValue("phoneNumber", profileInformation.phoneNum || "");
-      setValue("email", profileInformation.email || "");
+      setValue("street", profileInformation.street || "");
+      setValue("zipcode", profileInformation.zipcode || "");
+      setValue("city", profileInformation.city || "");
+      setValue("state", profileInformation.state || "");
+      setValue("country", profileInformation.country || "");
     }
   }, [setValue, profileInformation]);
 
@@ -89,12 +92,12 @@ const UpdateProfileForm = ({
         {/* Name fields */}
         <FormField
           control={form.control}
-          name="firstName"
+          name="street"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel>First Name</FormLabel>
+              <FormLabel>Street</FormLabel>
               <FormControl>
-                <Input placeholder="First name" {...field} />
+                <Input placeholder="Street and house number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -102,26 +105,12 @@ const UpdateProfileForm = ({
         />
         <FormField
           control={form.control}
-          name="lastName"
+          name="zipcode"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel>Last Name</FormLabel>
+              <FormLabel>Zipcode</FormLabel>
               <FormControl>
-                <Input placeholder="Last name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Contact fields */}
-        <FormField
-          control={form.control}
-          name="phoneNumber"
-          render={({ field }) => (
-            <FormItem className="col-span-1">
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input placeholder="+1234567890" {...field} />
+                <Input placeholder="Zipcode" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -129,12 +118,38 @@ const UpdateProfileForm = ({
         />
         <FormField
           control={form.control}
-          name="email"
+          name="city"
           render={({ field }) => (
             <FormItem className="col-span-1">
-              <FormLabel>Email</FormLabel>
+              <FormLabel>City</FormLabel>
               <FormControl>
-                <Input placeholder="email@example.com" {...field} />
+                <Input placeholder="City" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="state"
+          render={({ field }) => (
+            <FormItem className="col-span-1">
+              <FormLabel>State</FormLabel>
+              <FormControl>
+                <Input placeholder="State" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="country"
+          render={({ field }) => (
+            <FormItem className="col-span-1">
+              <FormLabel>Country</FormLabel>
+              <FormControl>
+                <Input placeholder="Country" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -143,7 +158,7 @@ const UpdateProfileForm = ({
 
         <div className="col-span-1 lg:col-span-2">
           <Button disabled={isPending} type="submit" className="w-fit">
-            {isPending && sec === "profile" && <LoadingSpinner />} Update
+            {isPending && sec === "address" && <LoadingSpinner />} Update
           </Button>
         </div>
       </form>
@@ -151,4 +166,4 @@ const UpdateProfileForm = ({
   );
 };
 
-export default UpdateProfileForm;
+export default UpdateAddressForm;
