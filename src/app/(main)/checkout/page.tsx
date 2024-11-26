@@ -14,7 +14,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { MoveRight } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import React, { Fragment, useState } from "react";
 import { useStore } from "zustand";
 
@@ -24,7 +24,6 @@ const openInNewTab = (url) => {
 
 const CheckoutPage = () => {
   const { formatNumber } = useNumberFormatter();
-  const { push } = useRouter();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
 
@@ -98,7 +97,7 @@ const CheckoutPage = () => {
   });
 
   const handlePlaceOrder = async () => {
-    let cartBody = {
+    const cartBody = {
       orderId: cartList?._id,
       body: {
         name: profileInformation?.name,

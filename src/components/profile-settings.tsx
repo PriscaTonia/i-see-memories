@@ -31,7 +31,13 @@ const profileSchema = z.object({
 
 interface Props {
   isPending: boolean;
-  update: any;
+  update: (data: {
+    body: {
+      name?: string;
+      email?: string;
+      phoneNum?: string;
+    };
+  }) => void;
   profileInformation: Profile;
   sec: string;
   setSec: React.Dispatch<React.SetStateAction<string>>;
@@ -58,7 +64,7 @@ const UpdateProfileForm = ({
 
   const onSubmit = async (values: z.infer<typeof profileSchema>) => {
     setSec("profile");
-    let body = {
+    const body = {
       name: `${values.firstName} ${values.lastName}`,
       phoneNum: values.phoneNumber,
       email: values.email,

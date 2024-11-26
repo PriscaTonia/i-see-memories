@@ -2,21 +2,15 @@
 
 import EmptyCartView from "@/components/empty-cart-view";
 import PreFooter from "@/components/pre-footer";
-// import { photoBookStore } from "@/store";
 import { Add, Minus } from "iconsax-react";
 import useNumberFormatter from "@/utils/useNumberFormatter";
 import { MoveRight, Trash2 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-// import { useStore } from "zustand";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  deleteCartItem,
-  fetchCartList,
-  updateCartItemQuantity,
-} from "@/services/cart-services";
+import { fetchCartList } from "@/services/cart-services";
 import { AxiosError } from "axios";
 import { notify } from "@/lib/notify";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -29,7 +23,7 @@ const CartPage = () => {
 
   const {
     data: cartList,
-    refetch,
+    // refetch,
     isLoading,
   } = useQuery({
     queryKey: ["fetchCart"],

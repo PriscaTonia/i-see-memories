@@ -1,15 +1,15 @@
 "use client";
-import AddNewShippingAddress from "@/components/add-new-shipping-address";
+// import AddNewShippingAddress from "@/components/add-new-shipping-address";
 import { Button } from "@/components/ui/button";
 import { TickCircle } from "iconsax-react";
 import { Pencil } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 
 const Addresses = () => {
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  // const [isDialogOpen, setDialogOpen] = useState(false);
 
-  const openDialog = () => setDialogOpen(true);
-  const closeDialog = () => setDialogOpen(false);
+  // const openDialog = () => setDialogOpen(true);
+  // const closeDialog = () => setDialogOpen(false);
 
   return (
     <div className="flex flex-col px-6 font-hagrid">
@@ -17,7 +17,7 @@ const Addresses = () => {
         <Button
           type="button"
           className="border border-black text-black w-fit bg-white hover:bg-black hover:text-white"
-          onClick={openDialog}
+          // onClick={openDialog}
         >
           Add New
         </Button>
@@ -46,7 +46,7 @@ const Addresses = () => {
       </div>
 
       {/* Add new address Dialog */}
-      <AddNewShippingAddress isOpen={isDialogOpen} onClose={closeDialog} />
+      {/* <AddNewShippingAddress isOpen={isDialogOpen} onClose={closeDialog} /> */}
     </div>
   );
 };

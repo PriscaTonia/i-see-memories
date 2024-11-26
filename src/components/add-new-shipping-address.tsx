@@ -138,7 +138,7 @@ const AddNewShippingAddress = ({
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    let cartBody = {
+    const cartBody = {
       orderId: cartList?._id,
       body: {
         name: `${values.firstName} ${values.lastName}`,
@@ -151,7 +151,7 @@ const AddNewShippingAddress = ({
       },
     };
 
-    let body = {
+    const body = {
       name: `${values.firstName} ${values.lastName}`,
       zipcode: values.address.zipcode,
       country: values.address.country,

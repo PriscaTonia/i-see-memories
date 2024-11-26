@@ -14,10 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Profile } from "@/lib/types";
 import { LoadingSpinner } from "./ui/loading-spinner";
-import { logoutUser } from "@/lib/logout";
-import { useRouter } from "next/navigation";
 
 // Form schema with validation
 const passwordSchema = z
@@ -39,19 +36,16 @@ const passwordSchema = z
 
 interface Props {
   isPending: boolean;
-  update: any;
-  profileInformation: Profile;
+  update: (data: {
+    body: {
+      password?: string;
+    };
+  }) => void;
   sec: string;
   setSec: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const UpdatePasswordForm = ({
-  isPending,
-  update,
-  profileInformation,
-  sec,
-  setSec,
-}: Props) => {
+const UpdatePasswordForm = ({ isPending, update, sec, setSec }: Props) => {
   const form = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
@@ -63,7 +57,7 @@ const UpdatePasswordForm = ({
 
   const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
     setSec("password");
-    let body = {
+    const body = {
       password: values.newPassword,
     };
 

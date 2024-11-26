@@ -21,6 +21,7 @@ import { notify } from "@/lib/notify";
 import { useMutation } from "@tanstack/react-query";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { signIn } from "next-auth/react";
+import { getUser } from "@/lib/session";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -53,8 +54,12 @@ const SignIn = () => {
 
       return res;
     },
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       notify("success", "Login successful!");
+
+      // save user id
+      await getUser();
+
       push("/account/profile-settings");
     },
     onError: (error: { data: unknown; message: string }) => {

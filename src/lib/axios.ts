@@ -12,7 +12,7 @@ AXIOS.interceptors.request.use(
   async (config) => {
     const session = await getSession();
 
-    const token = session.user.jwt;
+    const token = session?.user?.jwt;
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;

@@ -1,6 +1,5 @@
 import { UserInfoProps } from "@/next-auth";
 import { loginUser } from "@/services/auth-services";
-import { userStore } from "@/store";
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import NextAuth, { NextAuthOptions } from "next-auth";
@@ -37,10 +36,10 @@ const nextAuthConfig: NextAuthOptions = {
           );
         }
 
-        const user = res.data.data.user;
+        const user = res?.data?.data?.user;
 
         // console.log(user);
-        return { id: user._id, ...user, jwt: res.data.data.jwt };
+        return { id: user?._id, ...user, jwt: res?.data?.data?.jwt };
       },
     }),
   ],

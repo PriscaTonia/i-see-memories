@@ -10,8 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { TickCircle } from "iconsax-react";
 import { Pencil } from "lucide-react";
-import { Fragment, useState } from "react";
-import AddNewShippingAddress from "./add-new-shipping-address";
+import { Fragment } from "react";
+// import AddNewShippingAddress from "./add-new-shipping-address";
 
 interface Props {
   isOpen: boolean;
@@ -19,10 +19,10 @@ interface Props {
 }
 
 const ShippingAddressModal = ({ isOpen, onClose }: Props) => {
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  // const [isDialogOpen, setDialogOpen] = useState(false);
 
-  const openDialog = () => setDialogOpen(true);
-  const closeDialog = () => setDialogOpen(false);
+  // const openDialog = () => setDialogOpen(true);
+  // const closeDialog = () => setDialogOpen(false);
 
   return (
     <Fragment>
@@ -36,7 +36,7 @@ const ShippingAddressModal = ({ isOpen, onClose }: Props) => {
             <Button
               type="button"
               className="border border-black text-black w-fit bg-white hover:bg-black hover:text-white"
-              onClick={openDialog}
+              // onClick={openDialog}
             >
               Add New
             </Button>
@@ -81,7 +81,7 @@ const ShippingAddressModal = ({ isOpen, onClose }: Props) => {
       </Dialog>
 
       {/* Add new address Dialog */}
-      <AddNewShippingAddress isOpen={isDialogOpen} onClose={closeDialog} />
+      {/* <AddNewShippingAddress isOpen={isDialogOpen} onClose={closeDialog} /> */}
     </Fragment>
   );
 };

@@ -29,6 +29,7 @@ import { useStore } from "zustand";
 const TravelPhotoBook = () => {
   const { push } = useRouter();
   const { formatNumber } = useNumberFormatter();
+
   // const productId = useStore(photoBookStore, (state) => state.productId);
   const setProductId = useStore(photoBookStore, (state) => state.setProductId);
   const setTemplate = useStore(photoBookStore, (state) => state.setTemplateId);
@@ -79,7 +80,7 @@ const TravelPhotoBook = () => {
       frontCoverUrl: selectedTemplate?.frontCover,
       fullCoverUrl: selectedTemplate?.fullCover,
     });
-  }, [selectedPage]);
+  }, [selectedPage, selectedTemplate?.frontCover, selectedTemplate?.fullCover]);
 
   // console.log({ selectedPage, productId });
   // console.log({ templatesList });
@@ -224,20 +225,3 @@ const TravelPhotoBook = () => {
 export default TravelPhotoBook;
 
 const defaultImages = ["/img1.webp", "/img2.webp", "/img3.webp", "/img4.webp"];
-const pages = [
-  {
-    id: "1",
-    page: 52,
-    price: 80000,
-  },
-  {
-    id: "2",
-    page: 100,
-    price: 120000,
-  },
-  {
-    id: "3",
-    page: 152,
-    price: 160000,
-  },
-];

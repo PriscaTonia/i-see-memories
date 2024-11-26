@@ -4,7 +4,6 @@ import UpdatePasswordForm from "@/components/password-settings";
 import UpdateProfileForm from "@/components/profile-settings";
 import { logoutUser } from "@/lib/logout";
 import { notify } from "@/lib/notify";
-import { getUser } from "@/lib/session";
 import { fetchProfileInfo, updateProfile } from "@/services/profile-services";
 import { userStore } from "@/store";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -15,9 +14,6 @@ import { useStore } from "zustand";
 
 const ProfileSettings = () => {
   const router = useRouter();
-
-  // save user id
-  getUser();
 
   // logout
   const logout = async () => {
@@ -33,7 +29,7 @@ const ProfileSettings = () => {
   const {
     data: profileInformation,
     refetch,
-    isLoading,
+    // isLoading,
   } = useQuery({
     queryKey: ["fetchProfile", userId],
     queryFn: async () => {
@@ -69,6 +65,7 @@ const ProfileSettings = () => {
     onSuccess: async () => {
       notify("success", "Profile Updated successfully!");
       refetch();
+
       if (sec === "password") {
         logout();
         setSec("");
@@ -105,7 +102,6 @@ const ProfileSettings = () => {
 
       <h2 className="text-xl font-bold">Password Settings</h2>
       <UpdatePasswordForm
-        profileInformation={profileInformation}
         update={update}
         isPending={isPending}
         setSec={setSec}

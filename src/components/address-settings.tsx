@@ -30,7 +30,15 @@ const profileSchema = z.object({
 
 interface Props {
   isPending: boolean;
-  update: any;
+  update: (data: {
+    body: {
+      zipcode?: string;
+      country?: string;
+      street?: string;
+      state?: string;
+      city?: string;
+    };
+  }) => void;
   profileInformation: Profile;
   sec: string;
   setSec: React.Dispatch<React.SetStateAction<string>>;
@@ -58,7 +66,7 @@ const UpdateAddressForm = ({
 
   const onSubmit = async (values: z.infer<typeof profileSchema>) => {
     setSec("address");
-    let body = {
+    const body = {
       zipcode: values.zipcode,
       country: values.country,
       street: values.street,
@@ -71,10 +79,6 @@ const UpdateAddressForm = ({
 
   useEffect(() => {
     if (profileInformation) {
-      // Split name into firstName and lastName
-      const [firstName = "", lastName = ""] =
-        profileInformation.name?.split(" ") || [];
-
       setValue("street", profileInformation.street || "");
       setValue("zipcode", profileInformation.zipcode || "");
       setValue("city", profileInformation.city || "");

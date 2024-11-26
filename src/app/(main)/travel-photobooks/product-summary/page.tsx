@@ -1,34 +1,23 @@
 "use client";
+
 import CountDown from "@/components/countdown";
 import PreFooter from "@/components/pre-footer";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import AXIOS from "@/lib/axios";
 import { notify } from "@/lib/notify";
 import { fetchCartList } from "@/services/cart-services";
+import { UploadMedia } from "@/services/media-services";
 import { createCartItem } from "@/services/order-services";
 import { photoBookStore } from "@/store";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import clsx from "clsx";
 import { Add, Minus } from "iconsax-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { Fragment, useState } from "react";
 import { useStore } from "zustand";
-
-export async function UploadMedia(
-  file: File | Blob,
-  orderId: string,
-  pageNo: number
-) {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("orderId", orderId);
-  formData.append("pageNo", pageNo as unknown as string);
-
-  return AXIOS.post("pictures", formData);
-}
 
 const ProductSummary = () => {
   const { back, push } = useRouter();
@@ -58,7 +47,7 @@ const ProductSummary = () => {
   const {
     data: cartList,
     // refetch,
-    isLoading,
+    // isLoading,
   } = useQuery({
     queryKey: ["fetchCart"],
     queryFn: async () => {
@@ -89,7 +78,7 @@ const ProductSummary = () => {
       });
 
       try {
-        const responses = await Promise.all(imgPromises);
+        await Promise.all(imgPromises);
         notify("success", "Order created successfully!");
         push("/cart");
       } catch (error) {
@@ -113,7 +102,7 @@ const ProductSummary = () => {
       },
     ];
 
-    const res = await create(data);
+    await create(data);
   };
 
   // console.log({ photoBook, productId, template, quantity });
@@ -320,4 +309,4 @@ const ProductSummary = () => {
   );
 };
 
-export default ProductSummary;
+export default dynamic(() => Promise.resolve(ProductSummary), { ssr: false });
