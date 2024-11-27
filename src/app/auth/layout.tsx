@@ -15,7 +15,6 @@ export default function AuthLayout({
   return (
     <main className="">
       {children}
-
       <PreFooter />
       <Footer />
     </main>
