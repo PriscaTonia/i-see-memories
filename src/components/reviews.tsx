@@ -3,7 +3,7 @@ import React from "react";
 
 const Reviews = () => {
   return (
-    <section className=" bg-[#f6f6f6] font-hagrid">
+    <section id="reviews" className=" bg-[#f6f6f6] font-hagrid">
       <div className="container flex flex-col gap-[60px] py-[60px] px-[28px]">
         {/* first section */}
         <div className="flex flex-col gap-2 justify-center items-center">

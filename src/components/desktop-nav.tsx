@@ -26,16 +26,8 @@ interface Props {
 export const DesktopNav = ({ navLinks }: Props) => {
   const router = useRouter();
 
-  // Simulate authentication check (replace this with your real logic)
-  const isAuthenticated =
-    typeof window !== "undefined" && localStorage.getItem("token");
-
   const handleProfileClick = () => {
-    if (isAuthenticated) {
-      router.push("/account/profile-settings");
-    } else {
-      router.push("/auth/sign-in");
-    }
+    router.push("/account/profile-settings");
   };
 
   return (

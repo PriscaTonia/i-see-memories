@@ -25,6 +25,9 @@ import {
 } from "@/services/product-services";
 import { photoBookStore } from "@/store";
 import { useStore } from "zustand";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+// import { AxiosError } from "axios";
+import { notify } from "@/lib/notify";
 
 const TravelPhotoBook = () => {
   const { push } = useRouter();
@@ -33,32 +36,43 @@ const TravelPhotoBook = () => {
   // const productId = useStore(photoBookStore, (state) => state.productId);
   const setProductId = useStore(photoBookStore, (state) => state.setProductId);
   const setTemplate = useStore(photoBookStore, (state) => state.setTemplateId);
+  const setProduct = useStore(photoBookStore, (state) => state.setProduct);
 
-  const { data, isLoading, error } = useQuery({
+  const {
+    data,
+    isLoading: isProductsLoading,
+    error: ProductsError,
+    refetch: refetchProducts,
+  } = useQuery({
     queryKey: ["fetchProducts"],
     queryFn: async () => {
       try {
         const response = await fetchProductList();
         return response?.data;
       } catch (error) {
-        console.error(error);
-        throw error; // Rethrow the error so React Query can handle it.
+        notify("error", error?.response?.data?.message);
       }
     },
   });
 
-  const { data: templatesList } = useQuery({
+  const {
+    data: templatesList,
+    isLoading: isTemplatesLoading,
+    refetch: refetchTemplates,
+    error: TemplatesError,
+  } = useQuery({
     queryKey: ["fetchTemplates"],
     queryFn: async () => {
       try {
         const response = await fetchTemplateList();
         return response?.data;
       } catch (error) {
-        console.error(error);
-        throw error; // Rethrow the error so React Query can handle it.
+        notify("error", error?.response?.data?.message);
       }
     },
   });
+
+  const loading = isProductsLoading || isTemplatesLoading;
 
   const [selectedPage, setSelectedPage] = useState<{
     _id: string;
@@ -76,17 +90,53 @@ const TravelPhotoBook = () => {
 
   useEffect(() => {
     setProductId(selectedPage?._id);
+    setProduct({
+      pageCount: selectedPage?.pageCount,
+      price: selectedPage?.price,
+    });
     setTemplate({
       frontCoverUrl: selectedTemplate?.frontCover,
       fullCoverUrl: selectedTemplate?.fullCover,
     });
-  }, [selectedPage, selectedTemplate?.frontCover, selectedTemplate?.fullCover]);
+  }, [
+    setProduct,
+    setProductId,
+    setTemplate,
+    selectedPage,
+    selectedTemplate?.frontCover,
+    selectedTemplate?.fullCover,
+    selectedPage?.pageCount,
+    selectedPage?.price,
+  ]);
 
   // console.log({ selectedPage, productId });
   // console.log({ templatesList });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading products.</p>;
+  if (loading)
+    return (
+      <div className="p-6 lg:p-10 w-full flex justify-center items-center min-h-[60vh] ">
+        <LoadingSpinner />
+      </div>
+    );
+
+  if (ProductsError || TemplatesError)
+    // console.log({ ProductsError, TemplatesError });
+
+    return (
+      <div className="p-6 lg:p-10 w-full flex gap-3 justify-center items-center min-h-[60vh] ">
+        <p className="text-lg"> Error loading products.</p>
+
+        <Button
+          onClick={() => {
+            refetchProducts();
+            refetchTemplates();
+          }}
+          className="text-[#F1F0ED] bg-black border-black hover:bg-[#F1F0ED] hover:text-[#000000] rounded-md font-bold text-lg py-5 px-10"
+        >
+          Refetch Page!
+        </Button>
+      </div>
+    );
 
   return (
     <div className="flex flex-col font-hagrid">

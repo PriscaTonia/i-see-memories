@@ -9,6 +9,7 @@ import { fetchCartList } from "@/services/cart-services";
 import { UploadMedia } from "@/services/media-services";
 import { createCartItem } from "@/services/order-services";
 import { photoBookStore } from "@/store";
+import useNumberFormatter from "@/utils/useNumberFormatter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import clsx from "clsx";
@@ -21,16 +22,20 @@ import { useStore } from "zustand";
 
 const ProductSummary = () => {
   const { back, push } = useRouter();
+  const { formatNumber } = useNumberFormatter();
 
   // Access the photoBook state
   const photoBook = useStore(photoBookStore, (state) => state.photoBook);
   const quantity = useStore(photoBookStore, (state) => state.quantity);
   const productId = useStore(photoBookStore, (state) => state.productId);
   const template = useStore(photoBookStore, (state) => state.template);
+  const product = useStore(photoBookStore, (state) => state.product);
+
   const incrementQuantity = useStore(
     photoBookStore,
     (state) => state.incrementQuantity
   );
+
   const decrementQuantity = useStore(
     photoBookStore,
     (state) => state.decrementQuantity
@@ -80,10 +85,13 @@ const ProductSummary = () => {
       try {
         await Promise.all(imgPromises);
         notify("success", "Order created successfully!");
-        push("/cart");
+
+        // push("/cart");
       } catch (error) {
         console.error("Error uploading images:", error);
       }
+
+      push("/cart");
     },
     onError: (error: AxiosError<{ message: string }>) => {
       const message = error.response?.data?.message;
@@ -92,8 +100,18 @@ const ProductSummary = () => {
   });
 
   const onSubmit = async () => {
+    const c =
+      cartList?.items?.map((x) => ({
+        frontCoverUrl: x?.frontCoverUrl,
+        quantity: x?.quantity,
+        fullCoverUrl: x?.fullCoverUrl,
+        productId: x?.productId?._id,
+      })) || [];
+
+    // console.log(c);
+
     const data = [
-      ...cartList.items,
+      ...c,
       {
         productId: productId,
         quantity: quantity,
@@ -105,7 +123,7 @@ const ProductSummary = () => {
     await create(data);
   };
 
-  // console.log({ photoBook, productId, template, quantity });
+  // console.log({ photoBook, productId, template, quantity, product });
 
   return (
     <Fragment>
@@ -255,7 +273,8 @@ const ProductSummary = () => {
             <div className="flex justify-between gap-2 mb-6">
               <span className="font-bold text-base text-black">Total: </span>
               <span className="font-bold text-base text-black">
-                24 Pages for N 32.99
+                {product?.pageCount} Pages for N
+                {formatNumber(product?.price || 0)}
               </span>
             </div>
 

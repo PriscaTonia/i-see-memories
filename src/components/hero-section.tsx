@@ -1,8 +1,11 @@
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 const Hero = () => {
+  const { push } = useRouter();
   return (
     <section className="bg-hero-image bg-no-repeat bg-cover min-h-[60vh]">
       <div className="container py-[40px] md:py-[120px] px-[28px] md:px-[60px] flex flex-col gap-6">
@@ -33,10 +36,14 @@ const Hero = () => {
         </p>
 
         <div className="flex flex-col md:flex-row gap-2 justify-center items-center">
-          <Button className="bg-[#F1F0ED] text-black hover:bg-black hover:text-white rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]">
+          <Button
+            onClick={() => push("/travel-photobooks")}
+            className="bg-[#F1F0ED] text-black hover:bg-black hover:text-white rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]"
+          >
             Start My Design
           </Button>
           <Button
+            onClick={() => push("/#reviews")}
             variant="outline"
             className="text-[#F1F0ED] bg-transparent rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]"
           >

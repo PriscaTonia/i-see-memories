@@ -23,7 +23,8 @@ const CartPage = () => {
 
   const {
     data: cartList,
-    // refetch,
+    refetch: CartRefetch,
+    error: CartError,
     isLoading,
   } = useQuery({
     queryKey: ["fetchCart"],
@@ -32,12 +33,12 @@ const CartPage = () => {
         const response = await fetchCartList();
         return response?.data;
       } catch (error) {
-        console.error(error);
-        throw error; // Rethrow the error so React Query can handle it.
+        notify("error", error?.response?.data?.message);
       }
     },
   });
 
+  // update cart items
   const { mutate: updateCart, isPending } = useMutation({
     mutationFn: async (
       items: {
@@ -84,10 +85,11 @@ const CartPage = () => {
     setId("");
   };
 
+  // delete cart item
   const handleDeleteItem = (itemId) => {
     setId(itemId);
     const updatedCart = cartState.filter((item) => item._id !== itemId);
-    setCartState(updatedCart); // Update local state immediately
+    setCartState(updatedCart);
 
     // Call the delete mutation
     updateCart(
@@ -111,19 +113,38 @@ const CartPage = () => {
     setCartState(cartList?.items);
   }, [cartList?.items]);
 
-  // console.log(cartState);
+  // cart items loading
+  if (isLoading)
+    return (
+      <div className="p-6 lg:p-10 w-full flex justify-center items-center min-h-[60vh] ">
+        <LoadingSpinner />
+      </div>
+    );
+
+  // cart error
+  if (CartError)
+    // console.log({ CartError });
+
+    return (
+      <div className="p-6 lg:p-10 w-full flex gap-3 justify-center items-center min-h-[60vh] ">
+        <p className="text-lg"> Error loading cart items.</p>
+
+        <Button
+          onClick={() => {
+            CartRefetch();
+          }}
+          className="text-[#F1F0ED] bg-black border-black hover:bg-[#F1F0ED] hover:text-[#000000] rounded-md font-bold text-lg py-5 px-10"
+        >
+          Refetch Cart!
+        </Button>
+      </div>
+    );
 
   return (
     <div className="flex flex-col gap-6 p-6 lg:p-10 min-h-[60vh] font-hagrid container">
       <h1 className="font-bold text-[26px] w-full flex justify-between">
         Cart <span>{isPending && <LoadingSpinner />}</span>
       </h1>
-
-      {isLoading && (
-        <div className="min-h-[200px] flex items-center justify-center">
-          <LoadingSpinner />
-        </div>
-      )}
 
       {/* empty cart view */}
       {!isLoading && cartState?.length < 1 && <EmptyCartView />}
@@ -136,7 +157,7 @@ const CartPage = () => {
               return (
                 <div
                   key={item?._id}
-                  className="flex gap-3 p-5 border rounded justify-between"
+                  className="flex gap-3 p-3 lg:p-5 border rounded "
                 >
                   {/* item image */}
                   <Image
@@ -146,92 +167,94 @@ const CartPage = () => {
                     height={160}
                   />
 
-                  {/* item details */}
-                  <div className="flex flex-col">
-                    <h3 className="font-bold flex flex-col text-xl text-[#43464E]">
-                      {item?.name}
-                      <span className="flex gap-2 items-center">
-                        <span className="font-normal line-through">
-                          N
-                          {formatNumber(
-                            item?.productId?.price * item?.quantity * 2 || 0
-                          )}
+                  <section className="flex flex-col lg:flex-row gap-2 sm:gap-3 justify-between w-full">
+                    {/* item details */}
+                    <div className="flex flex-col">
+                      <h3 className="font-bold flex flex-col text-base lg:text-xl text-[#43464E]">
+                        {item?.name || "Custom Photo Book"}
+                        <span className="flex gap-2 items-center">
+                          <span className="font-normal line-through">
+                            N
+                            {formatNumber(
+                              item?.productId?.price * item?.quantity * 2 || 0
+                            )}
+                          </span>
+                          <span className="font-normal">
+                            N
+                            {formatNumber(
+                              item?.productId?.price * item?.quantity || 0
+                            )}
+                          </span>
                         </span>
-                        <span className="font-normal">
-                          N
-                          {formatNumber(
-                            item?.productId?.price * item?.quantity || 0
-                          )}
-                        </span>
-                      </span>
-                    </h3>
+                      </h3>
 
-                    <p className="text-sm lg:text-base mt-4">
-                      Cover Type: Hardcover
-                    </p>
-                    <p className="text-sm lg:text-base">
-                      Size: 11.5&apos;&apos; x 8.5&apos;&apos; Vertical
-                    </p>
-                    <p className="text-sm lg:text-base">
-                      Paper Finish: Gloss Paper
-                    </p>
-                  </div>
-
-                  {/* buttons */}
-                  <div className="flex flex-col justify-between items-end">
-                    <button
-                      disabled={isPending}
-                      onClick={() => handleDeleteItem(item?._id)}
-                    >
-                      <Trash2 className="cursor-pointer" />
-                    </button>
-
-                    <div className="flex items-center border-2 border-black rounded-md ">
-                      <button
-                        onClick={() => {
-                          if (item?.quantity === 1)
-                            return notify(
-                              "error",
-                              "Cart item cannot be less than 1"
-                            );
-                          handleQuantityChange(item?._id, item?.quantity - 1);
-                        }}
-                        disabled={isPending}
-                        className={clsx(
-                          "p-3",
-                          isPending && "cursor-not-allowed"
-                        )}
-                      >
-                        <Minus size="20" color="#000000" />
-                      </button>
-                      <p className="p-3 font-bold">
-                        {isPending && id === item?._id ? (
-                          <LoadingSpinner />
-                        ) : (
-                          item?.quantity
-                        )}
+                      <p className="text-sm lg:text-base mt-4">
+                        Cover Type: Hardcover
                       </p>
-                      <button
-                        onClick={() => {
-                          handleQuantityChange(item?._id, item?.quantity + 1);
-                        }}
-                        disabled={isPending}
-                        className={clsx(
-                          "p-3",
-                          isPending && "cursor-not-allowed"
-                        )}
-                      >
-                        <Add size="20" color="#000000" />
-                      </button>
+                      <p className="text-sm lg:text-base">
+                        Size: 11.5&apos;&apos; x 8.5&apos;&apos; Vertical
+                      </p>
+                      <p className="text-sm lg:text-base">
+                        Paper Finish: Gloss Paper
+                      </p>
                     </div>
-                  </div>
+
+                    {/* buttons */}
+                    <div className="flex flex-row gap-2 items-center lg:flex-col justify-between lg:items-end">
+                      <button
+                        disabled={isPending}
+                        onClick={() => handleDeleteItem(item?._id)}
+                      >
+                        <Trash2 className="cursor-pointer" />
+                      </button>
+
+                      <div className="flex items-center border-2 border-black rounded-md ">
+                        <button
+                          onClick={() => {
+                            if (item?.quantity === 1)
+                              return notify(
+                                "error",
+                                "Cart item cannot be less than 1"
+                              );
+                            handleQuantityChange(item?._id, item?.quantity - 1);
+                          }}
+                          disabled={isPending}
+                          className={clsx(
+                            "p-1 lg:p-3",
+                            isPending && "cursor-not-allowed"
+                          )}
+                        >
+                          <Minus size="20" color="#000000" />
+                        </button>
+                        <p className="p-1 lg:p-3 font-bold">
+                          {isPending && id === item?._id ? (
+                            <LoadingSpinner />
+                          ) : (
+                            item?.quantity
+                          )}
+                        </p>
+                        <button
+                          onClick={() => {
+                            handleQuantityChange(item?._id, item?.quantity + 1);
+                          }}
+                          disabled={isPending}
+                          className={clsx(
+                            "p-1 lg:p-3",
+                            isPending && "cursor-not-allowed"
+                          )}
+                        >
+                          <Add size="20" color="#000000" />
+                        </button>
+                      </div>
+                    </div>
+                  </section>
                 </div>
               );
             })}
           </div>
 
           {/* summary */}
-          <div className="col-span-1 flex flex-col gap-3 border rounded p-5">
+          <div className="col-span-1 h-fit flex flex-col gap-3 border rounded p-5">
             <h3 className="font-bold flex flex-col text-xl text-[#43464E]">
               Summary
             </h3>

@@ -12,3 +12,10 @@ export async function UploadMedia(
 
   return AXIOS.post("pictures", formData);
 }
+
+export async function UploadSingleMedia(file: File | Blob) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return AXIOS.post("pictures", formData);
+}

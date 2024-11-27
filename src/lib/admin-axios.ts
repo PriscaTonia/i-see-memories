@@ -1,24 +1,22 @@
 import axios from "axios";
-import { getSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
-import { logoutUser } from "./logout";
 import { notify } from "./notify";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 // Create Axios instance
-const AXIOS = axios.create({
+const ADMIN_AXIOS = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 // Request Interceptor
-AXIOS.interceptors.request.use(
+ADMIN_AXIOS.interceptors.request.use(
   async (config) => {
-    const session = await getSession();
-
-    const token = session?.user?.jwt;
+    const token = Cookies.get("admin-token");
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
-      config.headers["ism-auth-token"] = `${token}`;
+      config.headers["ism-admin-token"] = `${token}`;
     }
 
     config.headers["Content-Type"] =
@@ -37,7 +35,7 @@ AXIOS.interceptors.request.use(
 );
 
 // Response Interceptor
-AXIOS.interceptors.response.use(
+ADMIN_AXIOS.interceptors.response.use(
   (response) => response,
   (error) => {
     // console.log(error);
@@ -45,16 +43,15 @@ AXIOS.interceptors.response.use(
     if (error?.status === 401) {
       notify("error", "Unauthorized Access!");
 
-      logoutUser();
-    }
+      Cookies.remove("admin-token");
+      Cookies.remove("admin-id");
 
-    // if (error?.status === 500) {
-    //   notify("error", "Internal Server Error!");
-    // }
+      redirect("/admin/login");
+    }
 
     // Handle response errors
     return Promise.reject(error);
   }
 );
 
-export default AXIOS;
+export default ADMIN_AXIOS;

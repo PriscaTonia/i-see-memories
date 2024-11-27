@@ -18,11 +18,6 @@ export const updateCartItemQuantity = async ({
   return res.data;
 };
 
-export const deleteCartItem = async ({ id }: { id: string }) => {
-  const res = await AXIOS.delete(`users/cart/${id}`);
-  return res.data;
-};
-
 export const updateCartItemsShipping = async ({
   body,
   orderId,

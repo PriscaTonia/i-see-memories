@@ -5,6 +5,10 @@ export type PhotoBookState = {
   photoBook: File[];
   quantity: number;
   productId: string;
+  product: {
+    pageCount: number;
+    price: number;
+  };
   template: {
     fullCoverUrl: string;
     frontCoverUrl: string;
@@ -16,6 +20,13 @@ export type PhotoBookActions = {
   incrementQuantity: () => void;
   decrementQuantity: () => void;
   setProductId: (id: string) => void;
+  setProduct: ({
+    pageCount,
+    price,
+  }: {
+    pageCount: number;
+    price: number;
+  }) => void;
   setTemplateId: ({
     fullCoverUrl,
     frontCoverUrl,
@@ -32,6 +43,10 @@ export const defaultInitState: PhotoBookState = {
   photoBook: [],
   quantity: 1,
   productId: "",
+  product: {
+    pageCount: 0,
+    price: 0,
+  },
   template: {
     fullCoverUrl: "",
     frontCoverUrl: "",
@@ -53,8 +68,13 @@ export const createPhotoBookStore = (
     // Decrement the orderNo by 1
     decrementQuantity: () => set((state) => ({ quantity: state.quantity - 1 })),
 
-    // set product id and template object
+    // set product, productId and template object
     setProductId: (id: string) => set((state) => ({ ...state, productId: id })),
+    setProduct: ({ pageCount, price }) =>
+      set((state) => ({
+        ...state,
+        product: { pageCount, price },
+      })),
     setTemplateId: ({ fullCoverUrl, frontCoverUrl }) =>
       set((state) => ({
         ...state,

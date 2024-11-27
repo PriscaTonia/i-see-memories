@@ -43,3 +43,20 @@ export const loginUser = async (data: {
     return error;
   }
 };
+
+// admin login
+export const loginAdminUser = async (data: {
+  email: string;
+  password: string;
+}) => {
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}admin/login`,
+      data
+    );
+
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};

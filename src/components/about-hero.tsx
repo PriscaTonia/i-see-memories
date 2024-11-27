@@ -35,6 +35,9 @@ const AboutHeroSection = () => {
                   Start My Design
                 </Button>
                 <Button
+                  onClick={() => {
+                    push(`/#reviews`);
+                  }}
                   variant="outline"
                   className="text-[#000000] border-black hover:bg-black hover:text-[#F1F0ED] rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]"
                 >

@@ -42,7 +42,9 @@ const formSchema = z.object({
   lastName: z.string().min(1, { message: "Last name is required." }),
   phoneNumber: z
     .string()
-    .regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid phone number." }),
+    .regex(/^(\+?\d{1,3})?(\(?\d{1,4}\)?[-.\s]?)?[\d\s-]{7,14}$/, {
+      message: "Invalid phone number.",
+    }),
   address: z.object({
     street: z.string().min(1, { message: "Street is required." }),
     zipcode: z
@@ -130,9 +132,10 @@ const AddNewShippingAddress = ({
     onSuccess: async () => {
       notify("success", "Shipping Updated successfully!");
       refetchCart();
+      onClose();
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      const message = error.response?.data?.message;
+      const message = error?.response?.data?.message;
       notify("error", message as string);
     },
   });
@@ -163,8 +166,6 @@ const AddNewShippingAddress = ({
 
     await update({ body: body });
     await updateCart({ body: cartBody.body, orderId: cartBody.orderId });
-
-    onClose();
   };
 
   useEffect(() => {

@@ -12,7 +12,7 @@ export async function middleware(req: NextRequest) {
   const PATH_NAME = req.nextUrl.pathname;
 
   // Redirects user to login page if token does not exist
-  if (!token && PATH_NAME.startsWith("/account")) {
+  if (!token && PATH_NAME.startsWith("/(protected)")) {
     return NextResponse.redirect(new URL("/auth/sign-in", req.url));
   }
 
@@ -52,5 +52,9 @@ function shouldRedirectToDashboard(token: JWT) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/auth/:path*", "/account/:path*"],
+  matcher: [
+    "/auth/:path*", // Auth routes
+    "/account/:path*", // Account routes
+    "/(protected)/:path*", // Protected routes
+  ],
 };
