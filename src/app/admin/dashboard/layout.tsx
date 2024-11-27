@@ -52,7 +52,7 @@ export default function AdminLayout({
 
         {currentPath?.title ? currentPath?.title : ""}
       </button>
-      <section className="relative container flex min-h-screen max-h-screen w-full gap-[5%] px-5 pb-8 pt-6 md:px-20 lg:max-h-[80vh]">
+      <section className="relative container flex min-h-[80vh] max-h-screen w-full gap-[5%] px-5 pb-8 pt-6 md:px-20 lg:max-h-[80vh]">
         <AdminSidebar
           handleCloseSidebar={handleCloseSidebar}
           isOpen={isSidebarOpen}

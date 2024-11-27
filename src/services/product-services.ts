@@ -19,6 +19,31 @@ export const createProduct = async (data: {
   return res.data;
 };
 
+export const createTemplate = async (data: {
+  name: string;
+  frontCover: string;
+  fullCover: string;
+}) => {
+  const res = await ADMIN_AXIOS.post(`templates`, data);
+  return res.data;
+};
+
+export const updateTemplate = async ({
+  id,
+  data,
+}: {
+  id: string;
+  data: { name: string; frontCover: string; fullCover: string };
+}) => {
+  const res = await ADMIN_AXIOS.put(`templates/${id}`, data);
+  return res.data;
+};
+
+export const deleteTemplate = async ({ id }: { id: string }) => {
+  const res = await ADMIN_AXIOS.delete(`templates/${id}`);
+  return res.data;
+};
+
 export const updateProduct = async ({
   id,
   data,

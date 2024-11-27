@@ -73,7 +73,7 @@ const Products = () => {
           }}
           className="text-[#F1F0ED] bg-black border-black hover:bg-[#F1F0ED] hover:text-[#000000] rounded-md font-bold text-lg py-5 px-10"
         >
-          Refetch Page!
+          Refetch Products!
         </Button>
       </div>
     );
