@@ -174,13 +174,13 @@ const CartPage = () => {
                         {item?.name || "Custom Photo Book"}
                         <span className="flex gap-2 items-center">
                           <span className="font-normal line-through">
-                            N
+                            ₦
                             {formatNumber(
                               item?.productId?.price * item?.quantity * 2 || 0
                             )}
                           </span>
                           <span className="font-normal">
-                            N
+                            ₦
                             {formatNumber(
                               item?.productId?.price * item?.quantity || 0
                             )}
@@ -264,7 +264,7 @@ const CartPage = () => {
 
               <span className="flex gap-2 items-center">
                 <span className="font-normal line-through">
-                  N{formatNumber(totalPrice * 2)}
+                  ₦{formatNumber(totalPrice * 2)}
                 </span>
                 <span className="font-normal">N{formatNumber(totalPrice)}</span>
               </span>

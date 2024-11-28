@@ -18,6 +18,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+// import { getUser } from "@/lib/session";
 
 interface Props {
   navLinks: { title: string; path: string }[];
@@ -28,6 +29,7 @@ export const DesktopNav = ({ navLinks }: Props) => {
 
   const handleProfileClick = () => {
     router.push("/account/profile-settings");
+    // console.log(getUser());
   };
 
   return (

@@ -17,9 +17,6 @@ export default function MainLayout({
   return (
     <main>
       <Navbar />
-      {/* <Suspense fallback={<div className="p-6 lg:p-10">Page Loading...</div>}>
-        {children}
-      </Suspense> */}
       {children}
       <Footer />
     </main>

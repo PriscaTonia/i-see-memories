@@ -3,7 +3,19 @@ const nextConfig = {
     middlewarePrefetch: "strict",
   },
   images: {
-    domains: ["example.com", "res.cloudinary.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "example.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+    ],
+    // domains: ["example.com", "res.cloudinary.com"], using remotePatterns now
   },
   async headers() {
     return [

@@ -39,3 +39,10 @@ export const updateCartItemsShipping = async ({
   );
   return res.data;
 };
+
+// fetch orders
+
+export const fetchOrdersList = async () => {
+  const res = await AXIOS.get(`users/orders`);
+  return res.data;
+};
