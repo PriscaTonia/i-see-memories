@@ -46,3 +46,8 @@ export const fetchOrdersList = async () => {
   const res = await AXIOS.get(`users/orders`);
   return res.data;
 };
+
+export const fetchAnOrder = async ({ id }: { id: string }) => {
+  const res = await AXIOS.get(`users/orders/${id}`);
+  return res.data;
+};

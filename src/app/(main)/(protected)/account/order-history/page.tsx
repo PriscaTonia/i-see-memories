@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { notify } from "@/lib/notify";
 import { fetchOrdersList } from "@/services/cart-services";
-import useNumberFormatter from "@/utils/useNumberFormatter";
+// import useNumberFormatter from "@/utils/useNumberFormatter";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const OrderHistory = () => {
-  const { formatNumber } = useNumberFormatter();
+  const { push } = useRouter();
+  // const { formatNumber } = useNumberFormatter();
 
   const {
     data: orderList,
@@ -34,8 +37,6 @@ const OrderHistory = () => {
 
   // cart error
   if (OrderError)
-    // console.log({ CartError });
-
     return (
       <div className="p-6 lg:p-10 w-full flex gap-3 justify-center items-center min-h-[60vh] ">
         <p className="text-lg"> Error loading your orders.</p>
@@ -64,7 +65,7 @@ const OrderHistory = () => {
       </p>
 
       {isLoading && (
-        <div className="min-h-[200px]">
+        <div className="min-h-[200px] flex justify-center items-center">
           <LoadingSpinner />
         </div>
       )}
@@ -73,17 +74,87 @@ const OrderHistory = () => {
         <p className="mt-4">You currently have no orders Start shopping!</p>
       )}
 
-      {orderList?.map((order) => {
+      {orderList?.map((order, i) => {
+        const firstItem = order?.items?.[0];
+        const isPaid = order?.status === "Paid";
+
         return (
           <section
             key={order?._id}
-            className="border p-4 rounded flex flex-col gap-3"
+            className="border p-4 rounded flex flex-col md:flex-row gap-3 justify-between"
           >
-            <h3 className="text-lg lg:text-xl mb-3 font-semibold">
-              Order Slug #1
-            </h3>
+            <div
+              key={firstItem?._id}
+              className="w-full md:max-w-[80%] flex gap-3"
+            >
+              <Image
+                src={firstItem?.frontCoverUrl}
+                alt=""
+                width={100}
+                height={100}
+              />
 
-            {order?.items?.map((item) => {
+              <div className="flex flex-col gap-1 w-full max-w-[60%]">
+                <p className="text-sm w-full flex gap-1 ">
+                  <span className="font-bold">Custom Photobook </span>
+                </p>
+                <p className="text-sm w-full flex items-center gap-1 ">
+                  <span className="font-bold">Status: </span>
+                  <span
+                    className={clsx(
+                      "font-bold",
+                      isPaid && "bg-green-100 text-green-700 px-2 py-1 rounded"
+                    )}
+                  >
+                    {order?.status}
+                  </span>
+                </p>
+                <p className="text-sm w-full flex gap-1 ">
+                  <span className="font-bold">Date: </span>
+                  <span className="font-normal">
+                    {new Date(order?.createdAt).toDateString()}
+                  </span>
+                </p>
+
+                {/* <p className="text-sm w-full flex gap-1 ">
+                  <span className="font-bold">Quantity: </span>
+                  <span className="font-normal">{firstItem?.quantity}</span>
+                </p> */}
+
+                {/* <p className="text-sm w-full flex gap-1 ">
+                  <span className="font-bold">Cost: </span>
+                  <span className="font-normal">
+                    ₦
+                    {formatNumber(
+                      firstItem?.quantity * firstItem?.productId?.price || 0
+                    )}
+                  </span>
+                </p> */}
+
+                {/* <p className="text-sm w-full flex gap-1 ">
+                  <span className="font-bold">Page count: </span>
+                  <span className="font-normal">
+                    {firstItem?.productId?.pageCount}
+                  </span>
+                </p> */}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 justify-between items-end">
+              <Button
+                onClick={() =>
+                  push(`/account/order-history/${order?._id}?orderNo=${i + 1}`)
+                }
+                type="button"
+                className="w-fit"
+              >
+                View Details
+              </Button>
+
+              <h3 className="text-base font-semibold">Order #{i + 1}</h3>
+            </div>
+
+            {/* {order?.items?.map((item) => {
               return (
                 <div key={item?._id} className="flex gap-3 mb-4 shadow-md">
                   <Image
@@ -118,9 +189,9 @@ const OrderHistory = () => {
                   </div>
                 </div>
               );
-            })}
+            })} */}
 
-            <h4 className="font-semibold text-base lg:text-lg">
+            {/* <h4 className="font-semibold text-base lg:text-lg">
               Shipping Address:{" "}
             </h4>
 
@@ -145,7 +216,7 @@ const OrderHistory = () => {
               <p className="text-sm w-full flex gap-1 ">
                 {order?.shippingDetails?.country}.
               </p>
-            </div>
+            </div> */}
           </section>
         );
       })}

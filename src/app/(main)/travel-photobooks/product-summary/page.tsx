@@ -78,15 +78,16 @@ const ProductSummary = () => {
       return await createCartItem(items);
     },
     onSuccess: async (data) => {
+      const orderId = data?.data?._id;
+      const itemId = data?.data?.items?.at(-1)._id;
+
       const imgPromises = photoBook.map((image, i) => {
-        return UploadMedia(image, data?.data?._id, i + 1);
+        return UploadMedia(image, orderId, itemId, i + 1);
       });
 
       try {
         await Promise.all(imgPromises);
         notify("success", "Order created successfully!");
-
-        // push("/cart");
       } catch (error) {
         console.error("Error uploading images:", error);
       }
