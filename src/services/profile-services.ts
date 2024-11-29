@@ -1,7 +1,7 @@
 import AXIOS from "@/lib/axios";
 
-export const fetchProfileInfo = async ({ id }: { id: string }) => {
-  const res = await AXIOS.get(`users/profile/${id}`);
+export const fetchProfileInfo = async () => {
+  const res = await AXIOS.get(`users/profile`);
   return res.data;
 };
 

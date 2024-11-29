@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { notify } from "@/lib/notify";
 import { fetchOrdersList } from "@/services/cart-services";
-// import useNumberFormatter from "@/utils/useNumberFormatter";
+import { OrderStatusEnum } from "@/services/order-services";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import Image from "next/image";
@@ -13,7 +13,6 @@ import React from "react";
 
 const OrderHistory = () => {
   const { push } = useRouter();
-  // const { formatNumber } = useNumberFormatter();
 
   const {
     data: orderList,
@@ -25,15 +24,12 @@ const OrderHistory = () => {
     queryFn: async () => {
       try {
         const response = await fetchOrdersList();
-        // const response = await fetchCartList();
         return response?.data;
       } catch (error) {
         notify("error", error?.response?.data?.message);
       }
     },
   });
-
-  console.log(orderList);
 
   // cart error
   if (OrderError)
@@ -76,7 +72,9 @@ const OrderHistory = () => {
 
       {orderList?.map((order, i) => {
         const firstItem = order?.items?.[0];
-        const isPaid = order?.status === "Paid";
+        const isPaid = order?.status === OrderStatusEnum.Paid;
+        const isProcessing = order?.status === OrderStatusEnum.Processing;
+        const isDelivered = order?.status === OrderStatusEnum.Delivered;
 
         return (
           <section
@@ -103,7 +101,11 @@ const OrderHistory = () => {
                   <span
                     className={clsx(
                       "font-bold",
-                      isPaid && "bg-green-100 text-green-700 px-2 py-1 rounded"
+                      isPaid && "bg-blue-100 text-blue-700 px-2 py-1 rounded",
+                      isProcessing &&
+                        "bg-yellow-100 text-yellow-700 px-2 py-1 rounded",
+                      isDelivered &&
+                        "bg-green-100 text-green-700 px-2 py-1 rounded"
                     )}
                   >
                     {order?.status}
@@ -115,28 +117,6 @@ const OrderHistory = () => {
                     {new Date(order?.createdAt).toDateString()}
                   </span>
                 </p>
-
-                {/* <p className="text-sm w-full flex gap-1 ">
-                  <span className="font-bold">Quantity: </span>
-                  <span className="font-normal">{firstItem?.quantity}</span>
-                </p> */}
-
-                {/* <p className="text-sm w-full flex gap-1 ">
-                  <span className="font-bold">Cost: </span>
-                  <span className="font-normal">
-                    ₦
-                    {formatNumber(
-                      firstItem?.quantity * firstItem?.productId?.price || 0
-                    )}
-                  </span>
-                </p> */}
-
-                {/* <p className="text-sm w-full flex gap-1 ">
-                  <span className="font-bold">Page count: </span>
-                  <span className="font-normal">
-                    {firstItem?.productId?.pageCount}
-                  </span>
-                </p> */}
               </div>
             </div>
 
@@ -153,70 +133,6 @@ const OrderHistory = () => {
 
               <h3 className="text-base font-semibold">Order #{i + 1}</h3>
             </div>
-
-            {/* {order?.items?.map((item) => {
-              return (
-                <div key={item?._id} className="flex gap-3 mb-4 shadow-md">
-                  <Image
-                    src={item?.frontCoverUrl}
-                    alt=""
-                    width={100}
-                    height={100}
-                  />
-
-                  <div className="flex flex-col gap-1 w-full max-w-[60%]">
-                    <p className="text-sm w-full flex gap-1 ">
-                      <span className="font-bold">Quantity: </span>
-                      <span className="font-normal">{item?.quantity}</span>
-                    </p>
-
-                    <p className="text-sm w-full flex gap-1 ">
-                      <span className="font-bold">Price: </span>
-                      <span className="font-normal">
-                        ₦
-                        {formatNumber(
-                          item?.quantity * item?.productId?.price || 0
-                        )}
-                      </span>
-                    </p>
-
-                    <p className="text-sm w-full flex gap-1 ">
-                      <span className="font-bold">Page count: </span>
-                      <span className="font-normal">
-                        {item?.productId?.pageCount}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              );
-            })} */}
-
-            {/* <h4 className="font-semibold text-base lg:text-lg">
-              Shipping Address:{" "}
-            </h4>
-
-            <div className="flex flex-col gap-1 w-full max-w-[60%]">
-              <p className="text-sm w-full flex gap-1 ">
-                {order?.shippingDetails?.name}
-              </p>
-
-              <p className="text-sm w-full flex gap-1 ">
-                {order?.shippingDetails?.phoneNum}
-              </p>
-
-              <p className="text-sm w-full flex gap-1 ">
-                {order?.shippingDetails?.street}
-              </p>
-
-              <p className="text-sm w-full flex gap-1 ">
-                {order?.shippingDetails?.zipcode} {order?.shippingDetails?.city}
-                , {order?.shippingDetails?.state}
-              </p>
-
-              <p className="text-sm w-full flex gap-1 ">
-                {order?.shippingDetails?.country}.
-              </p>
-            </div> */}
           </section>
         );
       })}

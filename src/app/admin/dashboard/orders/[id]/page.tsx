@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import UpdateOrder from "@/components/update-order";
 import { notify } from "@/lib/notify";
 import { fetchAnOrder } from "@/services/cart-services";
 import { OrderStatusEnum } from "@/services/order-services";
@@ -11,7 +12,7 @@ import clsx from "clsx";
 import { MoveLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 const Page = ({ params }) => {
   const { id } = params;
@@ -20,16 +21,22 @@ const Page = ({ params }) => {
   const orderNo = searchParams.get("orderNo");
   const { formatNumber } = useNumberFormatter();
 
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
+  const openDialog = () => setDialogOpen(true);
+  const closeDialog = () => setDialogOpen(false);
+
   const {
     data: orderItem,
     refetch: OrderRefetch,
     error: OrderError,
     isLoading,
   } = useQuery({
-    queryKey: ["getAnOrderDetail"],
+    queryKey: ["getAnOrder"],
     queryFn: async () => {
       try {
         const response = await fetchAnOrder({ id });
+        // const response = await fetchCartList();
         return response?.data;
       } catch (error) {
         notify("error", error?.response?.data?.message);
@@ -47,13 +54,11 @@ const Page = ({ params }) => {
   const isProcessing = orderItem?.status === OrderStatusEnum.Processing;
   const isDelivered = orderItem?.status === OrderStatusEnum.Delivered;
 
-  // console.log(orderItem);
-
   // cart error
   if (OrderError)
     return (
       <div className="p-6 lg:p-10 w-full flex gap-3 justify-center items-center min-h-[60vh] ">
-        <p className="text-lg"> Error loading your order details.</p>
+        <p className="text-lg"> Error loading order details.</p>
 
         <Button
           onClick={() => {
@@ -68,16 +73,19 @@ const Page = ({ params }) => {
 
   return (
     <div className="flex flex-col gap-10 px-6 font-hagrid">
-      <h2 className="text-lg lg:text-xl font-bold hidden lg:flex gap-3">
-        <MoveLeft onClick={() => back()} className="cursor-pointer" /> Order
-        Details
-      </h2>
+      <div className="w-full flex justify-between">
+        <h2 className="text-lg lg:text-xl font-bold flex gap-3">
+          <MoveLeft onClick={() => back()} className="cursor-pointer" /> Order
+          Details
+        </h2>
 
-      <p className="text-sm">
-        View the details and status of your orders in the online store. To
-        cancel your order or request a return, send us a mail at
-        support@mail.com
-      </p>
+        <Button
+          onClick={openDialog}
+          className="text-[#F1F0ED] bg-black border-black hover:bg-[#F1F0ED] hover:text-[#000000] rounded-md font-bold text-lg py-5 px-10"
+        >
+          Edit Order
+        </Button>
+      </div>
 
       {isLoading && (
         <div className="min-h-[200px] flex justify-center items-center">
@@ -157,7 +165,7 @@ const Page = ({ params }) => {
 
         {/* shipping */}
         <h3 className="font-bold text-base lg:text-lg border-b mt-10 pb-1">
-          Shipping Address
+          Customer Shipping Details
         </h3>
 
         <div className="flex flex-col gap-1 w-full max-w-[60%] mt-4">
@@ -186,6 +194,14 @@ const Page = ({ params }) => {
       </section>
 
       {/* end */}
+
+      {/* Dialog */}
+      <UpdateOrder
+        refetch={OrderRefetch}
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
+        orderItem={orderItem}
+      />
     </div>
   );
 };

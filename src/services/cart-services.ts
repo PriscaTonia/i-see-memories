@@ -41,7 +41,6 @@ export const updateCartItemsShipping = async ({
 };
 
 // fetch orders
-
 export const fetchOrdersList = async () => {
   const res = await AXIOS.get(`users/orders`);
   return res.data;

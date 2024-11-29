@@ -1,3 +1,5 @@
+import { OrderStatusEnum } from "@/services/order-services";
+
 export interface Profile {
   _id: string;
   email: string;
@@ -45,4 +47,42 @@ export interface ShippingDetails {
   state: string;
   street: string;
   zipcode: string;
+}
+
+export interface OrderItem {
+  shippingDetails: ShippingDetails;
+  paidOn: null;
+  _id: string;
+  status: OrderStatusEnum;
+  userId: string;
+  __v: number;
+  items: Item[];
+  paymentStatus: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Item {
+  productId: ProductID;
+  frontCoverUrl: string;
+  fullCoverUrl: string;
+  quantity: number;
+  _id: string;
+}
+
+export interface ProductID {
+  _id: string;
+  pageCount: string;
+  price: number;
+  isDeleted: boolean;
+}
+
+export interface ShippingDetails {
+  name: string;
+  zipcode: string;
+  country: string;
+  street: string;
+  state: string;
+  city: string;
+  phoneNum: string;
 }

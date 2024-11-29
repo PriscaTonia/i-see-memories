@@ -34,7 +34,7 @@ const ProfileSettings = () => {
     queryKey: ["fetchProfile", userId],
     queryFn: async () => {
       try {
-        const response = await fetchProfileInfo({ id: userId });
+        const response = await fetchProfileInfo();
         return response?.data;
       } catch (error) {
         console.error(error);

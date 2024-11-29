@@ -94,7 +94,7 @@ export default AdminSidebar;
 
 export const adminSidebarLinks = [
   {
-    id: 6,
+    id: 1,
     title: "All Products",
     path: "/admin/dashboard/products",
   },
@@ -104,7 +104,7 @@ export const adminSidebarLinks = [
     path: "/admin/dashboard/templates",
   },
   {
-    id: 2,
+    id: 3,
     title: "View Orders",
     path: "/admin/dashboard/orders",
   },
