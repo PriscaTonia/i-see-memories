@@ -86,16 +86,22 @@ const ImageUploader = ({ max_num_page, images, setImages }: Props) => {
       return;
     }
 
+    let oversizedFilesExist = false;
+
     const validFiles = acceptedFiles.filter((file) => {
       if (file.size > 5 * 1024 * 1024) {
-        // Check if file size is greater than 5MB
-        notify("error", "One or more images exceed the 5MB size limit.");
+        oversizedFilesExist = true;
         return false;
       }
       return true;
     });
 
-    // Filter out SVG files based on MIME type and show a toast
+    // Notify about oversized files once
+    if (oversizedFilesExist) {
+      notify("error", "One or more images exceed the 5MB size limit.");
+    }
+
+    // Filter out SVG files based on MIME type and show a toast once
     const nonSvgFiles = validFiles.filter(
       (file) => file.type !== "image/svg+xml"
     );

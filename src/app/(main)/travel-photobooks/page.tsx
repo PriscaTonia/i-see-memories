@@ -26,14 +26,24 @@ import {
 import { photoBookStore } from "@/store";
 import { useStore } from "zustand";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-// import { AxiosError } from "axios";
 import { notify } from "@/lib/notify";
+import { getUser } from "@/lib/session";
 
 const TravelPhotoBook = () => {
   const { push } = useRouter();
   const { formatNumber } = useNumberFormatter();
 
-  // const productId = useStore(photoBookStore, (state) => state.productId);
+  const isUserLoggedIn = async () => {
+    const isLoggedIn = await getUser();
+
+    if (!isLoggedIn) {
+      push("/auth/sign-in");
+      return;
+    } else {
+      push(`/travel-photobooks/select-photos?pages=${selectedPage?.pageCount}`);
+    }
+  };
+
   const setProductId = useStore(photoBookStore, (state) => state.setProductId);
   const setTemplate = useStore(photoBookStore, (state) => state.setTemplateId);
   const setProduct = useStore(photoBookStore, (state) => state.setProduct);
@@ -86,7 +96,7 @@ const TravelPhotoBook = () => {
     fullCover: string;
     name: string;
     isDeleted: boolean;
-  }>(data?.[0]);
+  }>(templatesList?.[0]);
 
   useEffect(() => {
     setProductId(selectedPage?._id);
@@ -109,9 +119,6 @@ const TravelPhotoBook = () => {
     selectedPage?.price,
   ]);
 
-  // console.log({ selectedPage, productId });
-  // console.log({ templatesList });
-
   if (loading)
     return (
       <div className="p-6 lg:p-10 w-full flex justify-center items-center min-h-[60vh] ">
@@ -120,8 +127,6 @@ const TravelPhotoBook = () => {
     );
 
   if (ProductsError || TemplatesError)
-    // console.log({ ProductsError, TemplatesError });
-
     return (
       <div className="p-6 lg:p-10 w-full flex gap-3 justify-center items-center min-h-[60vh] ">
         <p className="text-lg"> Error loading products.</p>
@@ -142,6 +147,7 @@ const TravelPhotoBook = () => {
     <div className="flex flex-col font-hagrid">
       {/* count down timer */}
       <CountDown />
+
       <div className="container flex flex-col ">
         <div className="grid grid-cols-1 lg:grid-cols-2 py-9 lg:max-w-[90%] gap-8 mx-auto">
           {/* image carousel */}
@@ -186,6 +192,7 @@ const TravelPhotoBook = () => {
                     templatesList[0]
                 )
               }
+              value={selectedTemplate?._id}
             >
               <SelectTrigger className="flex justify-center border-[2px] py-5 px-[56px] min-h-[68px] focus:outline-none focus:ring-0 rounded-md border-black">
                 <SelectValue
@@ -217,6 +224,7 @@ const TravelPhotoBook = () => {
               onValueChange={(value) =>
                 setSelectedPage(data?.find((p) => p?._id === value) || data[0])
               }
+              value={selectedPage?._id}
             >
               <SelectTrigger className="flex justify-center border-[2px] py-5 px-[56px] min-h-[68px] focus:outline-none focus:ring-0 rounded-md border-black">
                 <SelectValue
@@ -242,9 +250,12 @@ const TravelPhotoBook = () => {
 
             <Button
               onClick={() => {
-                push(
-                  `/travel-photobooks/select-photos?pages=${selectedPage?.pageCount}`
-                );
+                if (!selectedPage || !selectedTemplate) {
+                  notify("error", "Select a template and number of pages");
+                  return;
+                }
+
+                isUserLoggedIn();
               }}
               variant="outline"
               className="text-[#000000] border-black hover:bg-black hover:text-[#F1F0ED] rounded-md min-h-[68px] font-bold text-lg py-5 px-[56px]"

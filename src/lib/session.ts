@@ -7,8 +7,10 @@ export const getUser = async () => {
   // Directly update Zustand store state
   if (session) {
     userStore.setState({ userId: session?.user?._id });
+    return true;
   }
 
+  return false;
   // console.log(session);
   // console.log(userStore.getState().userId);
 };
