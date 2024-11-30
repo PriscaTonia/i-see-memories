@@ -147,9 +147,11 @@ const CartPage = () => {
       </h1>
 
       {/* empty cart view */}
-      {!isLoading && cartState?.length < 1 && <EmptyCartView />}
+      {!isLoading && (cartState?.length < 1 || cartList === null) && (
+        <EmptyCartView />
+      )}
 
-      {cartState?.length > 0 && (
+      {!isLoading && cartState?.length > 0 && (
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 mb-5">
           {/* cart */}
           <div className="flex flex-col gap-3 col-span-1 lg:col-span-2">
