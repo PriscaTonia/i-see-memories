@@ -16,10 +16,27 @@ import { notify } from "@/lib/notify";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { createCartItem } from "@/services/order-services";
 import clsx from "clsx";
+import { getUser } from "@/lib/session";
 
 const CartPage = () => {
   const { formatNumber } = useNumberFormatter();
   const { push } = useRouter();
+  const [logged, setLogged] = useState(false);
+
+  const isUserLoggedIn = async () => {
+    const isLoggedIn = await getUser();
+
+    if (isLoggedIn) {
+      setLogged(true);
+      return;
+    }
+
+    setLogged(false);
+  };
+
+  useEffect(() => {
+    isUserLoggedIn();
+  }, []);
 
   const {
     data: cartList,
@@ -148,7 +165,7 @@ const CartPage = () => {
 
       {/* empty cart view */}
       {!isLoading && (cartState?.length < 1 || cartList === null) && (
-        <EmptyCartView />
+        <EmptyCartView isLoggedIn={logged} />
       )}
 
       {!isLoading && cartState?.length > 0 && (

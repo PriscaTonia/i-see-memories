@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const EmptyCartView = () => {
+const EmptyCartView = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const { push } = useRouter();
   return (
     <section className="flex flex-col justify-center items-center gap-5 lg:gap-8">
@@ -28,9 +28,11 @@ const EmptyCartView = () => {
         Start creating
       </Button>
 
-      <Link className="text-sm underline" href="/auth/sign-in">
-        Or log in
-      </Link>
+      {!isLoggedIn && (
+        <Link className="text-sm underline" href="/auth/sign-in">
+          Or log in
+        </Link>
+      )}
     </section>
   );
 };
