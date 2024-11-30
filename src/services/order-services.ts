@@ -18,19 +18,26 @@ export const fetchAllOrdersList = async () => {
   return res.data;
 };
 
+export const fetchAnOrderDetails = async ({ id }: { id: string }) => {
+  const res = await ADMIN_AXIOS.get(`orders/${id}`);
+  return res.data;
+};
+
 export const updateAnOrder = async ({
   body,
   orderId,
 }: {
   orderId: string;
   body: {
-    name?: string;
-    zipcode?: string;
-    country?: string;
-    street?: string;
-    state?: string;
-    city?: string;
-    phoneNum?: string;
+    shippingDetails: {
+      name?: string;
+      zipcode?: string;
+      country?: string;
+      street?: string;
+      state?: string;
+      city?: string;
+      phoneNum?: string;
+    };
     status?: OrderStatusEnum;
   };
 }) => {

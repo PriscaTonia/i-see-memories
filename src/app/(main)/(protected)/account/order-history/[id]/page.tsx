@@ -162,25 +162,27 @@ const Page = ({ params }) => {
 
         <div className="flex flex-col gap-1 w-full max-w-[60%] mt-4">
           <p className="text-sm w-full flex gap-1 ">
-            {orderItem?.shippingDetails?.name}
+            Name: {orderItem?.shippingDetails?.name}
           </p>
 
           <p className="text-sm w-full flex gap-1 ">
-            {orderItem?.shippingDetails?.phoneNum}
+            Phone: {orderItem?.shippingDetails?.phoneNum}
           </p>
 
           <p className="text-sm w-full flex gap-1 ">
-            {orderItem?.shippingDetails?.street}
+            Street: {orderItem?.shippingDetails?.street}
           </p>
-
           <p className="text-sm w-full flex gap-1 ">
-            {orderItem?.shippingDetails?.zipcode}{" "}
-            {orderItem?.shippingDetails?.city},{" "}
+            Zipcode: {orderItem?.shippingDetails?.zipcode}
+          </p>
+          <p className="text-sm w-full flex gap-1 ">
+            City: {orderItem?.shippingDetails?.city}
+          </p>
+          <p className="text-sm w-full flex gap-1 ">
             {orderItem?.shippingDetails?.state}
           </p>
-
           <p className="text-sm w-full flex gap-1 ">
-            {orderItem?.shippingDetails?.country}.
+            {orderItem?.shippingDetails?.country}
           </p>
         </div>
       </section>

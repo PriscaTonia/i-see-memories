@@ -52,6 +52,7 @@ export interface ShippingDetails {
 export interface OrderItem {
   shippingDetails: ShippingDetails;
   paidOn: null;
+  orderNo: string;
   _id: string;
   status: OrderStatusEnum;
   userId: string;
@@ -68,6 +69,7 @@ export interface Item {
   fullCoverUrl: string;
   quantity: number;
   _id: string;
+  pictures: Picture[];
 }
 
 export interface ProductID {
@@ -85,4 +87,19 @@ export interface ShippingDetails {
   state: string;
   city: string;
   phoneNum: string;
+}
+
+export interface Picture {
+  _id: string;
+  url: string;
+  size: number;
+  type: string;
+  public_id: string;
+  filename: string;
+  pageNo: number;
+  order: string;
+  itemId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
 }

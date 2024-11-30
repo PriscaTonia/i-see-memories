@@ -99,11 +99,21 @@ const AddNewTemplateModal = ({
     },
   });
 
-  const handleImageUpload = async (file: File | null, defaultUrl: string) => {
+  const handleImageUpload = async (
+    file: File | null,
+    defaultUrl: string,
+    name: string
+  ) => {
     if (file) {
-      const response = await UploadSingleMedia(file);
-      // console.log(response);
-      return response?.data?.data.url; // Adjust based on your API's response structure
+      try {
+        const response = await UploadSingleMedia(file);
+        return response?.data?.data.url;
+      } catch (error) {
+        // console.log(error);
+        notify("error", `${name} ${error?.response?.data?.message}`);
+        setImgLoading(false);
+        return;
+      }
     }
 
     return defaultUrl;
@@ -114,12 +124,14 @@ const AddNewTemplateModal = ({
 
     const frontCoverUrl = await handleImageUpload(
       frontCover,
-      templateInfo?.frontCover || ""
+      templateInfo?.frontCover || "",
+      "Front Cover"
     );
 
     const fullCoverUrl = await handleImageUpload(
       fullCover,
-      templateInfo?.fullCover || ""
+      templateInfo?.fullCover || "",
+      "Full Cover"
     );
 
     const body = {

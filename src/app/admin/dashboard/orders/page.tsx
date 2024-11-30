@@ -60,7 +60,9 @@ const OrderHistory = () => {
       )}
 
       {!isLoading && orderList < 1 && (
-        <p className="mt-4">You currently have no orders!</p>
+        <p className="flex justify-center items-center min-h-[60vh]">
+          You currently have no orders!
+        </p>
       )}
 
       {orderList?.map((order, i) => {
@@ -85,9 +87,13 @@ const OrderHistory = () => {
                 height={100}
               />
 
-              <div className="flex flex-col gap-1 w-full max-w-[60%]">
+              <div className="flex flex-col gap-1 flex-1 max-w-[60%]">
                 <p className="text-sm w-full flex gap-1 ">
                   <span className="font-bold">Custom Photobook </span>
+                </p>
+                <p className="text-base">
+                  <span className="font-bold">Order No: </span>{" "}
+                  <span className="">{order?.orderNo}</span>
                 </p>
                 <p className="text-sm w-full flex items-center gap-1 ">
                   <span className="font-bold">Status: </span>
@@ -113,7 +119,7 @@ const OrderHistory = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 justify-between items-end">
+            <div className="flex flex-col w-fit gap-3 justify-between items-end">
               <Button
                 onClick={() =>
                   push(`/admin/dashboard/orders/${order?._id}?orderNo=${i + 1}`)
@@ -123,8 +129,6 @@ const OrderHistory = () => {
               >
                 View Details
               </Button>
-
-              <h3 className="text-base font-semibold">Order #{i + 1}</h3>
             </div>
           </section>
         );

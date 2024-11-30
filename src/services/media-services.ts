@@ -19,5 +19,5 @@ export async function UploadSingleMedia(file: File | Blob) {
   const formData = new FormData();
   formData.append("file", file);
 
-  return AXIOS.post("pictures", formData);
+  return AXIOS.post("media", formData);
 }

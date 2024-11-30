@@ -105,7 +105,7 @@ const CheckoutPage = () => {
         street: profileInformation?.street,
         state: profileInformation?.state,
         city: profileInformation?.city,
-        phoneNum: profileInformation?.phoneNumber,
+        phoneNum: profileInformation?.phoneNum,
       },
     };
 
