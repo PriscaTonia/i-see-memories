@@ -10,14 +10,14 @@ import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { MoveLeft } from "lucide-react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Page = ({ params }) => {
   const { id } = params;
   const { back } = useRouter();
-  const searchParams = useSearchParams();
-  const orderNo = searchParams.get("orderNo");
+  // const searchParams = useSearchParams();
+  // const orderNo = searchParams.get("orderNo");
   const { formatNumber } = useNumberFormatter();
 
   const {
@@ -87,7 +87,9 @@ const Page = ({ params }) => {
 
       {/* order info */}
       <section className="flex flex-col gap-1">
-        <h3 className="font-bold text-base lg:text-lg">Order No. #{orderNo}</h3>
+        <h3 className="font-bold text-base lg:text-lg">
+          Order No. {orderItem?.orderNo}
+        </h3>
 
         <p className="text-sm w-full">{orderItem?.items?.length} Items</p>
         <p className="text-sm w-full">

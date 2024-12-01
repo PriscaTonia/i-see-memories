@@ -70,7 +70,7 @@ const OrderHistory = () => {
         <p className="mt-4">You currently have no orders Start shopping!</p>
       )}
 
-      {orderList?.map((order, i) => {
+      {orderList?.map((order) => {
         const firstItem = order?.items?.[0];
         const isPaid = order?.status === OrderStatusEnum.Paid;
         const isProcessing = order?.status === OrderStatusEnum.Processing;
@@ -123,7 +123,9 @@ const OrderHistory = () => {
             <div className="flex flex-col gap-3 justify-between items-end">
               <Button
                 onClick={() =>
-                  push(`/account/order-history/${order?._id}?orderNo=${i + 1}`)
+                  push(
+                    `/account/order-history/${order?._id}?orderNo=${order?.orderNo}`
+                  )
                 }
                 type="button"
                 className="w-fit"
@@ -131,7 +133,9 @@ const OrderHistory = () => {
                 View Details
               </Button>
 
-              <h3 className="text-base font-semibold">Order #{i + 1}</h3>
+              <h3 className="text-base font-semibold">
+                Order No. {order?.orderNo}
+              </h3>
             </div>
           </section>
         );
