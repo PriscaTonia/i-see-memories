@@ -32,6 +32,10 @@ import { getUser } from "@/lib/session";
 const TravelPhotoBook = () => {
   const { push } = useRouter();
   const { formatNumber } = useNumberFormatter();
+  const [carouselImages, setCarouselImages] = useState<string[]>([
+    "/img2.webp",
+    "/img3.webp",
+  ]);
 
   const isUserLoggedIn = async () => {
     const isLoggedIn = await getUser();
@@ -119,6 +123,19 @@ const TravelPhotoBook = () => {
     selectedPage?.price,
   ]);
 
+  useEffect(() => {
+    // Update carousel images whenever the selected template changes
+    if (selectedTemplate) {
+      const newImages = [
+        selectedTemplate?.frontCover,
+        "/img2.webp",
+        "/img3.webp",
+        selectedTemplate?.fullCover,
+      ];
+      setCarouselImages(newImages);
+    }
+  }, [selectedTemplate]);
+
   if (loading)
     return (
       <div className="p-6 lg:p-10 w-full flex justify-center items-center min-h-[60vh] ">
@@ -152,7 +169,7 @@ const TravelPhotoBook = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 py-9 lg:max-w-[90%] gap-8 mx-auto">
           {/* image carousel */}
           <div className="col-span-1">
-            <ImageCarousel images={defaultImages} />
+            <ImageCarousel images={carouselImages} />
           </div>
 
           {/* product content */}
@@ -284,5 +301,3 @@ const TravelPhotoBook = () => {
 };
 
 export default TravelPhotoBook;
-
-const defaultImages = ["/img1.webp", "/img2.webp", "/img3.webp", "/img4.webp"];

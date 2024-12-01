@@ -6,6 +6,7 @@ import { alegreya, hagridText, khula } from "@/lib/font";
 import ProvidersParent from "@/components/providers-parent";
 import NProgressHandler from "@/components/nprogress-handler";
 import { Suspense } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export const metadata: Metadata = {
   title: "I See Memories",
@@ -23,7 +24,13 @@ export default function RootLayout({
       className={`${alegreya.variable} ${khula.variable} ${hagridText.variable} `}
     >
       <body className="">
-        <Suspense fallback={<div className="p-6 lg:p-10">Page Loading...</div>}>
+        <Suspense
+          fallback={
+            <div className="p-6 lg:p-10">
+              <LoadingSpinner />
+            </div>
+          }
+        >
           <NProgressHandler />
           <ProvidersParent>{children}</ProvidersParent>
         </Suspense>

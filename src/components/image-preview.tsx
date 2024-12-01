@@ -1,5 +1,7 @@
 import React from "react";
 import Image from "next/image";
+import { useStore } from "zustand";
+import { photoBookStore } from "@/store";
 
 interface Props {
   images: { file: File; pageNo: number }[];
@@ -15,6 +17,8 @@ const ImageBookPreview = ({ images }: Props) => {
     pages.push([imagesWithoutFirst[i], imagesWithoutFirst[i + 1]]);
   }
 
+  const template = useStore(photoBookStore, (state) => state.template);
+
   return (
     <div className="flex flex-wrap items-center gap-6 p-4">
       {/* Cover spread: Front cover and Back cover */}
@@ -23,7 +27,7 @@ const ImageBookPreview = ({ images }: Props) => {
         {/* Front cover */}
         <div className="flex flex-col items-center py-2">
           <Image
-            src="/img1.webp"
+            src={template.frontCoverUrl}
             alt="Front cover"
             width={120}
             height={120}
@@ -35,13 +39,13 @@ const ImageBookPreview = ({ images }: Props) => {
         {/* Back cover */}
         <div className="flex flex-col items-center py-2">
           <Image
-            src="/img1.webp"
+            src={template.fullCoverUrl}
             alt="Back cover"
             width={120}
             height={120}
             className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
           />
-          <p className="text-center text-xs mt-2">Back cover</p>
+          <p className="text-center text-xs mt-2">Full cover</p>
         </div>
       </div>
 
