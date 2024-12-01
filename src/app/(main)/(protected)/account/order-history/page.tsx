@@ -96,6 +96,10 @@ const OrderHistory = () => {
                 <p className="text-sm w-full flex gap-1 ">
                   <span className="font-bold">Custom Photobook </span>
                 </p>
+                <p className="text-sm w-full flex items-center gap-1">
+                  <span className="font-bold">Order No.</span>{" "}
+                  <span className="font-normal">{order?.orderNo}</span>
+                </p>
                 <p className="text-sm w-full flex items-center gap-1 ">
                   <span className="font-bold">Status: </span>
                   <span
@@ -132,10 +136,6 @@ const OrderHistory = () => {
               >
                 View Details
               </Button>
-
-              <h3 className="text-base font-semibold">
-                Order No. {order?.orderNo}
-              </h3>
             </div>
           </section>
         );
