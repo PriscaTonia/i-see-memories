@@ -15,10 +15,10 @@ const Reviews = () => {
               <Star1 size="20" color="#000000" variant="Bold" />
               <Star1 size="20" color="#000000" variant="Bold" />
             </span>
-            Rated 4.4/5 based on +1475 reviews
+            Rated 4.4/5 based on +147 reviews
           </p>
           <h3 className="text-black font-bold text-2xl md:text-[40px] uppercase md:leading-[48px] lg:max-w-[40%] text-center">
-            Loved by thousands of &quot;I See&quot; Fans!
+            Loved by hundreds of &quot;I See&quot; Fans!
           </h3>
         </div>
 

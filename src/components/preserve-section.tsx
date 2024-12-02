@@ -118,7 +118,7 @@ const PreserveSection = () => {
                 <p className="flex flex-col text-black text-base">
                   <span className="font-bold">Highly Rated and Trusted</span>
                   <span className="font-normal">
-                    Rated #1 in photo books with over 10,000 happy customers.
+                    Rated #1 in photo books with over 100 happy customers.
                   </span>
                 </p>
               </div>

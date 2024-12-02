@@ -26,7 +26,7 @@ const PreFooter = () => {
         </div>
         <div className={cont_style}>
           <Star1 size="20" color="#000000" variant="Outline" />
-          <h6 className="text-base font-bold">100,000+ Happy Customers</h6>
+          <h6 className="text-base font-bold">100+ Happy Customers</h6>
           <p className="text-[#666666] text-sm text-center">
             Join our community of satisfied customers who have preserved their
             adventures with Pixory. Your memories are in good hands.

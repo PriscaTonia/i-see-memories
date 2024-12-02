@@ -416,19 +416,19 @@ const TermsAndConditions = () => {
         <p>
           Questions about the Terms of Service should be sent to us at{" "}
           <a
-            href="mailto:support@iseememories.com"
+            href="mailto:support@iseememoriesng.com"
             className="text-blue-500 underline"
           >
-            support@iseememories.com
+            support@iseememoriesng.com
           </a>
           . Our contact information is posted below:
         </p>
         <p>
           <a
-            href="mailto:support@iseememories.com"
+            href="mailto:support@iseememoriesng.com"
             className="text-blue-500 underline"
           >
-            support@iseememories.com
+            support@iseememoriesng.com
           </a>
         </p>
 
@@ -445,10 +445,10 @@ const TermsAndConditions = () => {
         <p>
           To start a return, you can contact us at{" "}
           <a
-            href="mailto:support@iseememories.com"
+            href="mailto:support@iseememoriesng.com"
             className="text-blue-500 underline"
           >
-            support@iseememories.com
+            support@iseememoriesng.com
           </a>
           . If your return is accepted, we’ll send you a return shipping label,
           as well as instructions on how and where to send your package. Items
@@ -458,10 +458,10 @@ const TermsAndConditions = () => {
         <p className="border-b pb-3">
           You can always contact us for any return question at{" "}
           <a
-            href="mailto:support@iseememories.com"
+            href="mailto:support@iseememoriesng.com"
             className="text-blue-500 underline"
           >
-            support@iseememories.com
+            support@iseememoriesng.com
           </a>
           .
         </p>
@@ -519,10 +519,10 @@ const TermsAndConditions = () => {
           If more than 15 business days have passed since we’ve approved your
           return, please contact us at{" "}
           <a
-            href="mailto:support@iseememories.com"
+            href="mailto:support@iseememoriesng.com"
             className="text-blue-500 underline"
           >
-            support@iseememories.com
+            support@iseememoriesng.com
           </a>
           .
         </p>

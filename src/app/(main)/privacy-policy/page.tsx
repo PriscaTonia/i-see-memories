@@ -12,7 +12,7 @@ const PrivacyPolicy = () => {
           This Privacy Policy explains how I see memories (&rdquo;we,&rdquo;
           &rdquo;us,&rdquo; or &rdquo;our&rdquo;) collects, uses, and shares
           your personal information when you visit or interact with
-          iseememories.com (the “Site”) or use our services.
+          iseememoriesng.com (the “Site”) or use our services.
         </p>
 
         <h3 className="text-xl font-bold mt-6">

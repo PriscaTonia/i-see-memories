@@ -19,7 +19,7 @@ const Hero = () => {
               quality={100}
               className="w-[100px] object-contain h-6 md:h-8"
             />{" "}
-            10,000+ Happy Customers
+            100+ Happy Customers
           </p>
         </div>
 

@@ -1,7 +1,8 @@
-import { Facebook, Instagram, Youtube } from "iconsax-react";
+import { Facebook, Instagram } from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import TikTok from "./tiktok-icon";
 
 const Footer = () => {
   return (
@@ -13,12 +14,35 @@ const Footer = () => {
         </Link>
 
         <p className="flex flex-col gap-1 text-sm text-[#1d1f22]">
-          <span className="font-bold">Contact: </span> support@iseememories.com
+          <span className="font-bold">Contact: </span>{" "}
+          <a href="mailto:support@iseememoriesng.com">
+            support@iseememoriesng.com
+          </a>
         </p>
         <div className="flex gap-2 items-center">
-          <Facebook size="20" color="#000000" variant="Bold" />
-          <Instagram size="20" color="#000000" variant="Outline" />
-          <Youtube size="20" color="#000000" variant="Bold" />
+          <Link
+            href="https://www.facebook.com/share/1DZnvM7jMT/?mibextid=LQQJ4d"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Facebook size="20" color="#000000" variant="Bold" />
+          </Link>
+          <Link
+            href="https://www.instagram.com/i.seememories/profilecard/?igsh=MWg5aGhqOHQwNGtlMQ=="
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Instagram size="20" color="#000000" variant="Outline" />
+          </Link>
+          <Link
+            href="https://www.tiktok.com/@iseememories?_t=8rsQ5TfVxCL&_r=1"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <TikTok />
+          </Link>
+
+          {/* <Youtube size="20" color="#000000" variant="Bold" /> */}
         </div>
       </div>
 
