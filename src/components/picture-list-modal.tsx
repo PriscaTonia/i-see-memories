@@ -59,11 +59,11 @@ const PictureListModal = ({ isOpen, onClose, pictures, orderNo }: Props) => {
     }
   };
 
-  console.log(pictures);
+  // console.log(pictures);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[80%] md:max-w-[60%] ">
+      <DialogContent className="max-w-[80%] md:max-w-[60%] max-h-[70%] overflow-y-auto ">
         <DialogHeader>
           <DialogTitle>Pictures List</DialogTitle>
         </DialogHeader>
@@ -77,7 +77,7 @@ const PictureListModal = ({ isOpen, onClose, pictures, orderNo }: Props) => {
         </Button>
 
         {/* pictures list */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {sortedPictures.map((picture) => (
             <div
               className="flex col-span-1 gap-1 flex-wrap flex-col"

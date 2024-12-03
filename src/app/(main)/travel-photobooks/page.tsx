@@ -28,10 +28,15 @@ import { useStore } from "zustand";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { notify } from "@/lib/notify";
 import { getUser } from "@/lib/session";
+import CustomizeTemplateModal from "@/components/customize-template-modal";
 
 const TravelPhotoBook = () => {
   const { push } = useRouter();
   const { formatNumber } = useNumberFormatter();
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const openDialog = () => setDialogOpen(true);
+  const closeDialog = () => setDialogOpen(false);
+
   const [carouselImages, setCarouselImages] = useState<string[]>([
     "/img2.webp",
     "/img3.webp",
@@ -51,6 +56,10 @@ const TravelPhotoBook = () => {
   const setProductId = useStore(photoBookStore, (state) => state.setProductId);
   const setTemplate = useStore(photoBookStore, (state) => state.setTemplateId);
   const setProduct = useStore(photoBookStore, (state) => state.setProduct);
+
+  const title = useStore(photoBookStore, (state) => state.title);
+  const subTitle = useStore(photoBookStore, (state) => state.subTitle);
+  const color = useStore(photoBookStore, (state) => state.color);
 
   const {
     data,
@@ -193,13 +202,12 @@ const TravelPhotoBook = () => {
             </h5>
 
             <p className="py-6 my-6 border-y border-dashed border-[#6e6d6b]">
-              Choose your template or start from scratch, and design your custom
-              travel book in under 10 minutes! All templates are fully
-              customisable in the editor.
+              Choose your template, and design your custom travel book in under
+              10 minutes! All templates are fully customisable.
             </p>
 
             <p className="text-sm mb-2 text-[#6e6d6b] font-semibold">
-              Choose your cover template or start from scratch
+              Choose your cover template and customize your book title and color
             </p>
 
             <Select
@@ -232,6 +240,10 @@ const TravelPhotoBook = () => {
                   })}
               </SelectContent>
             </Select>
+
+            {selectedTemplate && (
+              <Button onClick={openDialog}>Customize Your Template</Button>
+            )}
 
             <p className="text-sm mb-2 text-[#6e6d6b] font-semibold">
               Choose the number of pages for your photobook
@@ -272,6 +284,14 @@ const TravelPhotoBook = () => {
                   return;
                 }
 
+                if (!title || !subTitle || !color) {
+                  notify(
+                    "error",
+                    "Customize your template and select a color for your cover"
+                  );
+                  return;
+                }
+
                 isUserLoggedIn();
               }}
               variant="outline"
@@ -296,6 +316,9 @@ const TravelPhotoBook = () => {
       <Reviews />
       <BeautifulMoments />
       <PreFooter />
+
+      {/* Dialog */}
+      <CustomizeTemplateModal isOpen={isDialogOpen} onClose={closeDialog} />
     </div>
   );
 };

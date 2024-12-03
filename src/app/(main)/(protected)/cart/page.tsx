@@ -63,6 +63,9 @@ const CartPage = () => {
         fullCoverUrl: string;
         frontCoverUrl: string;
         quantity: number;
+        title: string;
+        subTitle: string;
+        color: string;
       }[]
     ) => {
       return await createCartItem(items);
@@ -96,6 +99,9 @@ const CartPage = () => {
         fullCoverUrl: c?.fullCoverUrl,
         frontCoverUrl: c?.frontCoverUrl,
         quantity: c?.quantity,
+        title: c?.title,
+        subTitle: c?.subTitle,
+        color: c?.color,
       }))
     );
 
@@ -115,6 +121,9 @@ const CartPage = () => {
         fullCoverUrl: c?.fullCoverUrl,
         frontCoverUrl: c?.frontCoverUrl,
         quantity: c?.quantity,
+        title: c?.title,
+        subTitle: c?.subTitle,
+        color: c?.color,
       }))
     );
     setId("");

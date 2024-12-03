@@ -30,6 +30,9 @@ const ProductSummary = () => {
   const productId = useStore(photoBookStore, (state) => state.productId);
   const template = useStore(photoBookStore, (state) => state.template);
   const product = useStore(photoBookStore, (state) => state.product);
+  const title = useStore(photoBookStore, (state) => state.title);
+  const subTitle = useStore(photoBookStore, (state) => state.subTitle);
+  const color = useStore(photoBookStore, (state) => state.color);
 
   const incrementQuantity = useStore(
     photoBookStore,
@@ -72,6 +75,9 @@ const ProductSummary = () => {
         productId: string;
         fullCoverUrl: string;
         frontCoverUrl: string;
+        title: string;
+        subTitle: string;
+        color: string;
         quantity: number;
       }[]
     ) => {
@@ -107,6 +113,9 @@ const ProductSummary = () => {
         quantity: x?.quantity,
         fullCoverUrl: x?.fullCoverUrl,
         productId: x?.productId?._id,
+        title: x?.title,
+        subTitle: x?.subTitle,
+        color: x?.color,
       })) || [];
 
     // console.log(c);
@@ -118,13 +127,25 @@ const ProductSummary = () => {
         quantity: quantity,
         frontCoverUrl: template?.frontCoverUrl,
         fullCoverUrl: template?.fullCoverUrl,
+        title: title,
+        subTitle: subTitle,
+        color: color,
       },
     ];
 
     await create(data);
   };
 
-  // console.log({ photoBook, productId, template, quantity, product });
+  console.log({
+    photoBook,
+    productId,
+    template,
+    quantity,
+    product,
+    title,
+    subTitle,
+    color,
+  });
 
   return (
     <Fragment>
@@ -186,7 +207,7 @@ const ProductSummary = () => {
             </h6>
 
             {/* options */}
-            <h3 className="mb-6 font-bold text-3xl">Your selected options:</h3>
+            <h3 className="mb-6 font-bold text-3xl">Your options:</h3>
 
             <p className="flex w-full text-base">
               <span className="font-bold py-2 px-3 w-full border border-black border-opacity-15">
@@ -212,6 +233,37 @@ const ProductSummary = () => {
               </span>
               <span className="font-normal flex py-2 px-3 w-full place-self-end border border-black border-opacity-15">
                 Matte laminate
+              </span>
+            </p>
+
+            <p className="flex w-full text-base">
+              <span className="font-bold py-2 px-3 w-full border border-black border-opacity-15">
+                Cover Title
+              </span>
+              <span className="font-normal flex py-2 px-3 w-full place-self-end border border-black border-opacity-15">
+                {title}
+              </span>
+            </p>
+
+            <p className="flex w-full text-base">
+              <span className="font-bold py-2 px-3 w-full border border-black border-opacity-15">
+                Sub Title
+              </span>
+              <span className="font-normal flex py-2 px-3 w-full place-self-end border border-black border-opacity-15">
+                {subTitle}
+              </span>
+            </p>
+
+            <p className="flex w-full text-base">
+              <span className="font-bold py-2 px-3 w-full border border-black border-opacity-15">
+                Color
+              </span>
+              <span className="font-normal flex gap-2 py-2 px-3 w-full place-self-end border border-black border-opacity-15">
+                {color}
+                <span
+                  className="w-[30px] h-[20px] rounded-md"
+                  style={{ backgroundColor: color }}
+                ></span>
               </span>
             </p>
 
@@ -274,8 +326,8 @@ const ProductSummary = () => {
             <div className="flex justify-between gap-2 mb-6">
               <span className="font-bold text-base text-black">Total: </span>
               <span className="font-bold text-base text-black">
-                {product?.pageCount} Pages for N
-                {formatNumber(product?.price || 0)}
+                {product?.pageCount} Pages x {quantity} for N
+                {formatNumber(product?.price * quantity || 0)}
               </span>
             </div>
 

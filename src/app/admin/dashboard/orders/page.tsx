@@ -99,12 +99,10 @@ const OrderHistory = () => {
                   <span className="font-bold">Status: </span>
                   <span
                     className={clsx(
-                      "font-bold",
-                      isPaid && "bg-blue-100 text-blue-700 px-2 py-1 rounded",
-                      isProcessing &&
-                        "bg-yellow-100 text-yellow-700 px-2 py-1 rounded",
-                      isDelivered &&
-                        "bg-green-100 text-green-700 px-2 py-1 rounded"
+                      "font-semibold text-xs px-3 py-1 rounded",
+                      isPaid && "bg-blue-100 text-blue-700 ",
+                      isProcessing && "bg-yellow-100 text-yellow-700",
+                      isDelivered && "bg-green-100 text-green-700"
                     )}
                   >
                     {order?.status}
@@ -121,11 +119,7 @@ const OrderHistory = () => {
 
             <div className="flex flex-col w-fit gap-3 justify-between items-end">
               <Button
-                onClick={() =>
-                  push(
-                    `/admin/dashboard/orders/${order?._id}?orderNo=${order?.orderNo}`
-                  )
-                }
+                onClick={() => push(`/admin/dashboard/orders/${order?._id}`)}
                 type="button"
                 className="w-fit"
               >

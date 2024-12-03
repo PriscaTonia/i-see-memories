@@ -112,7 +112,7 @@ const Products = () => {
             return (
               <div
                 key={p?._id}
-                className="p-4 border border-black rounded-md flex flex-col gap-3 lg:min-w-[30%]"
+                className="p-4 border rounded-md flex flex-col gap-3 lg:min-w-[30%]"
               >
                 <p className="text-sm font-bold">Product {i + 1} </p>
 

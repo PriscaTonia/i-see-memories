@@ -13,6 +13,9 @@ export type PhotoBookState = {
     fullCoverUrl: string;
     frontCoverUrl: string;
   };
+  title: string;
+  subTitle: string;
+  color: string;
 };
 
 export type PhotoBookActions = {
@@ -34,6 +37,9 @@ export type PhotoBookActions = {
     fullCoverUrl: string;
     frontCoverUrl: string;
   }) => void;
+  setTitle: (title: string) => void;
+  setSubTitle: (subTitle: string) => void;
+  setColor: (color: string) => void;
 };
 
 export type PhotoBookStore = PhotoBookState & PhotoBookActions;
@@ -43,6 +49,9 @@ export const defaultInitState: PhotoBookState = {
   photoBook: [],
   quantity: 1,
   productId: "",
+  title: "",
+  subTitle: "",
+  color: "",
   product: {
     pageCount: 0,
     price: 0,
@@ -80,5 +89,10 @@ export const createPhotoBookStore = (
         ...state,
         template: { fullCoverUrl, frontCoverUrl },
       })),
+    // set title, sub title, and color
+    setTitle: (title: string) => set((state) => ({ ...state, title: title })),
+    setSubTitle: (subTitle: string) =>
+      set((state) => ({ ...state, subTitle: subTitle })),
+    setColor: (color: string) => set((state) => ({ ...state, color: color })),
   }));
 };

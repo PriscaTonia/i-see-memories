@@ -20,7 +20,7 @@ const SelectPhotos = () => {
 
   const searchParams = useSearchParams();
   const page = searchParams.get("pages");
-  const max_num_page = Number(page) - 2;
+  const max_num_page = Number(page);
   const remainingLength = max_num_page - images?.length;
 
   // Access the photoBook state and updatePhotoBooks action

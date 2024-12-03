@@ -20,8 +20,7 @@ import React, { useState } from "react";
 const Page = ({ params }) => {
   const { id } = params;
   const { back } = useRouter();
-  // const searchParams = useSearchParams();
-  // const orderNo = searchParams.get("orderNo");
+
   const { formatNumber } = useNumberFormatter();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -113,10 +112,10 @@ const Page = ({ params }) => {
         <p className="text-sm w-full mt-2">
           <span
             className={clsx(
-              "font-bold",
-              isPaid && "bg-blue-100 text-blue-700 px-2 py-1 rounded",
-              isProcessing && "bg-yellow-100 text-yellow-700 px-2 py-1 rounded",
-              isDelivered && "bg-green-100 text-green-700 px-2 py-1 rounded"
+              "font-semibold text-xs px-3 py-1 rounded",
+              isPaid && "bg-blue-100 text-blue-700 ",
+              isProcessing && "bg-yellow-100 text-yellow-700",
+              isDelivered && "bg-green-100 text-green-700"
             )}
           >
             {orderItem?.status}
@@ -133,62 +132,83 @@ const Page = ({ params }) => {
             return (
               <div
                 key={item?._id}
-                className="w-full md:max-w-[95%] flex flex-col sm:flex-row gap-3 justify-between"
+                className="flex flex-col gap-2 md:max-w-[95%] w-full"
               >
-                <div className="flex-1 flex gap-3">
-                  <Image
-                    src={item?.frontCoverUrl}
-                    alt=""
-                    width={100}
-                    height={100}
-                  />
+                {/* customization details */}
+                <p className="text-base w-full flex gap-1 ">
+                  <span className="font-bold">Title: </span>
+                  <span className="font-normal">{item?.title}</span>
+                </p>
+                <p className="text-base w-full flex gap-1 ">
+                  <span className="font-bold">Sub Title: </span>
+                  <span className="font-normal">{item?.subTitle}</span>
+                </p>
+                <p className="text-base w-full flex gap-1 mb-2">
+                  <span className="font-bold">Color Code: </span>
+                  <span className="font-normal uppercase">{item?.color}</span>
+                  <span
+                    className="w-[30px] h-[20px] rounded-md"
+                    style={{ backgroundColor: item?.color }}
+                  ></span>
+                </p>
 
-                  <div className="flex flex-col gap-1 w-full max-w-[60%] ">
-                    <p className="text-sm w-full flex gap-1 ">
-                      <span className="font-bold">
-                        Custom Photobook {i + 1}{" "}
-                      </span>
-                    </p>
+                {/* other item details */}
+                <section className="w-full  flex flex-col sm:flex-row gap-3 justify-between">
+                  <div className="flex-1 flex gap-3">
+                    <Image
+                      src={item?.frontCoverUrl}
+                      alt=""
+                      width={100}
+                      height={100}
+                    />
 
-                    <p className="text-sm w-full flex gap-1 ">
-                      <span className="font-bold">Quantity: </span>
-                      <span className="font-normal">{item?.quantity}</span>
-                    </p>
+                    <div className="flex flex-col gap-1 w-full max-w-[60%] ">
+                      <p className="text-sm w-full flex gap-1 ">
+                        <span className="font-bold">
+                          Custom Photobook {i + 1}{" "}
+                        </span>
+                      </p>
 
-                    <p className="text-sm w-full flex gap-1 ">
-                      <span className="font-bold">Cost: </span>
-                      <span className="font-normal">
-                        ₦
-                        {formatNumber(
-                          item?.quantity * item?.productId?.price || 0
-                        )}
-                      </span>
-                    </p>
+                      <p className="text-sm w-full flex gap-1 ">
+                        <span className="font-bold">Quantity: </span>
+                        <span className="font-normal">{item?.quantity}</span>
+                      </p>
 
-                    <p className="text-sm w-full flex gap-1 ">
-                      <span className="font-bold">Page count: </span>
-                      <span className="font-normal">
-                        {item?.productId?.pageCount}
-                      </span>
-                    </p>
+                      <p className="text-sm w-full flex gap-1 ">
+                        <span className="font-bold">Cost: </span>
+                        <span className="font-normal">
+                          ₦
+                          {formatNumber(
+                            item?.quantity * item?.productId?.price || 0
+                          )}
+                        </span>
+                      </p>
+
+                      <p className="text-sm w-full flex gap-1 ">
+                        <span className="font-bold">Page count: </span>
+                        <span className="font-normal">
+                          {item?.productId?.pageCount}
+                        </span>
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                {/* images list */}
-                <button
-                  onClick={openPictureDialog}
-                  className="underline font-semibold w-fit"
-                >
-                  View Images
-                </button>
+                  {/* images list */}
+                  <button
+                    onClick={openPictureDialog}
+                    className="underline font-semibold w-fit"
+                  >
+                    View Images
+                  </button>
 
-                {/* Pictures Dialog */}
-                <PictureListModal
-                  isOpen={isPictureDialogOpen}
-                  onClose={closePictureDialog}
-                  pictures={item?.pictures}
-                  orderNo={orderItem?.orderNo}
-                />
+                  {/* Pictures Dialog */}
+                  <PictureListModal
+                    isOpen={isPictureDialogOpen}
+                    onClose={closePictureDialog}
+                    pictures={item?.pictures}
+                    orderNo={orderItem?.orderNo}
+                  />
+                </section>
               </div>
             );
           })}
