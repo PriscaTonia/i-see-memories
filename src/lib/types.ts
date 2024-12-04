@@ -103,3 +103,9 @@ export interface Picture {
   updatedAt: Date;
   __v: number;
 }
+
+export interface ShippingOption {
+  label: string;
+  type: "island" | "mainland" | "home" | "pickup"; // restricting 'type' to the specific values you have
+  price: number;
+}

@@ -108,4 +108,9 @@ export const adminSidebarLinks = [
     title: "View Orders",
     path: "/admin/dashboard/orders",
   },
+  {
+    id: 4,
+    title: "Shipping Prices",
+    path: "/admin/dashboard/shipping",
+  },
 ];
