@@ -24,13 +24,16 @@ export const updateCartItemsShipping = async ({
 }: {
   orderId: string;
   body: {
-    name: string;
-    zipcode: string;
-    country: string;
-    street: string;
-    state: string;
-    city: string;
-    phoneNum: string;
+    shippingType?: string;
+    shippingDetails: {
+      name: string;
+      zipcode: string;
+      country: string;
+      street: string;
+      state: string;
+      city: string;
+      phoneNum: string;
+    };
   };
 }) => {
   const res = await AXIOS.patch(

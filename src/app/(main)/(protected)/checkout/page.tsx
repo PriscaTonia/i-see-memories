@@ -8,6 +8,7 @@ import {
   updateCartItemsShipping,
 } from "@/services/cart-services";
 import { createPayment, fetchProfileInfo } from "@/services/profile-services";
+import { fetchShippingPrices } from "@/services/shipping-services";
 import { userStore } from "@/store";
 import useNumberFormatter from "@/utils/useNumberFormatter";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -21,6 +22,14 @@ const openInNewTab = (url) => {
   window.open(url, "_blank", "noopener,noreferrer");
 };
 
+interface ShippingOption {
+  _id: string;
+  label: string;
+  type: "island" | "mainland" | "home" | "pickup";
+  price: number;
+  __v: number;
+}
+
 const CheckoutPage = () => {
   const { formatNumber } = useNumberFormatter();
 
@@ -30,6 +39,12 @@ const CheckoutPage = () => {
   const closeDialog = () => setDialogOpen(false);
 
   const userId = useStore(userStore, (state) => state.userId);
+
+  const [selectedOption, setSelectedOption] = useState<null | string>(null);
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
 
   // getting cart
   const {
@@ -73,6 +88,56 @@ const CheckoutPage = () => {
     },
   });
 
+  // fetching shipping prices list
+  const {
+    data: shippingPricesList,
+    // isLoading: isShippingLoading,
+    // error: isShippingPricesError,
+    // refetch: refetchShippingPricesList,
+  } = useQuery({
+    queryKey: ["fetchShipping"],
+    queryFn: async () => {
+      try {
+        const response = await fetchShippingPrices();
+        return response?.data;
+      } catch (error) {
+        notify("error", error?.response?.data?.message);
+      }
+    },
+  });
+
+  const getShippingOptions = (state: string, city: string) => {
+    // Define the Lagos-specific areas (you can extend this list if needed)
+    const lagosIslandCities = [
+      "Victoria Island",
+      "Ikoyi",
+      "Lekki",
+      "Ajah",
+      "Lagos Island",
+    ];
+
+    // Check if the state is Lagos
+    if (state === "Lagos") {
+      if (lagosIslandCities.includes(city)) {
+        return shippingPricesList?.filter((item) => item?.type === "island");
+      } else {
+        return shippingPricesList?.filter((item) => item?.type === "mainland");
+      }
+    }
+
+    // For any other state, return Home and Pickup options
+    return shippingPricesList?.filter(
+      (item) => item?.type !== "island" && item?.type !== "mainland"
+    );
+  };
+
+  const shippingOptions: ShippingOption[] = getShippingOptions(
+    profileInformation?.state,
+    profileInformation?.city
+  );
+
+  // console.log(shippingOptions);
+
   const isShippingAvailable =
     profileInformation?.name &&
     profileInformation?.state &&
@@ -99,13 +164,16 @@ const CheckoutPage = () => {
     const cartBody = {
       orderId: cartList?._id,
       body: {
-        name: profileInformation?.name,
-        zipcode: profileInformation?.zipcode,
-        country: profileInformation?.country,
-        street: profileInformation?.street,
-        state: profileInformation?.state,
-        city: profileInformation?.city,
-        phoneNum: profileInformation?.phoneNum,
+        shippingDetails: {
+          name: profileInformation?.name,
+          zipcode: profileInformation?.zipcode,
+          country: profileInformation?.country,
+          street: profileInformation?.street,
+          state: profileInformation?.state,
+          city: profileInformation?.city,
+          phoneNum: profileInformation?.phoneNum,
+        },
+        shippingType: selectedOption,
       },
     };
 
@@ -162,6 +230,34 @@ const CheckoutPage = () => {
                   </p>
                 </Fragment>
               )}
+            </div>
+
+            {/* shipping options */}
+            <div className="col-span-1 flex flex-col gap-3 border rounded p-5">
+              <h3 className="font-bold flex w-full text-xl text-[#43464E]">
+                Shipping Options
+              </h3>
+
+              <div className="flex flex-col gap-3">
+                {shippingOptions?.map((opt, i) => {
+                  return (
+                    <div key={i} className="">
+                      <input
+                        type="radio"
+                        id={`shipping-option-${opt.type}`}
+                        name="shippingOption"
+                        value={opt.type}
+                        checked={selectedOption === opt.type}
+                        onChange={handleOptionChange}
+                        className="mr-2"
+                      />
+                      <label htmlFor={`shipping-option-${opt.type}`}>
+                        {`${opt.label} - ₦${opt.price}`}
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* shipping methods */}
@@ -256,7 +352,14 @@ const CheckoutPage = () => {
 
               <p className="flex text-sm lg:text-base justify-between items-center">
                 <span className="text-xs lg:text-sm">Shipping:</span>
-                <span className="font-normal">N{formatNumber(0)}</span>
+                <span className="font-normal">
+                  N
+                  {formatNumber(
+                    shippingOptions.find(
+                      (item) => item?.type === selectedOption
+                    )?.price || 0
+                  )}
+                </span>
               </p>
             </div>
 
@@ -267,6 +370,11 @@ const CheckoutPage = () => {
                     "error",
                     "Please make sure to fill in all shipping details"
                   );
+                  return;
+                }
+
+                if (!selectedOption) {
+                  notify("error", "Please select a shipping method");
                   return;
                 }
 

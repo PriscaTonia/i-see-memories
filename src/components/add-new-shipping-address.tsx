@@ -18,14 +18,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { updateProfile } from "@/services/profile-services";
 import { notify } from "@/lib/notify";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { LoadingSpinner } from "./ui/loading-spinner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { updateCartItemsShipping } from "@/services/cart-services";
 import { CartList, Profile } from "@/lib/types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cities_in_lagos } from "@/lib/data";
 
 interface Props {
   isOpen: boolean;
@@ -56,6 +64,14 @@ const formSchema = z.object({
   }),
 });
 
+const countries = [
+  {
+    id: 1,
+    name: "Nigeria",
+    code: "NG",
+  },
+];
+
 const AddNewShippingAddress = ({
   isOpen,
   onClose,
@@ -82,6 +98,68 @@ const AddNewShippingAddress = ({
   });
 
   const { setValue } = form;
+
+  const [countryCode, setCountryCode] = useState("");
+  const [stateCode, setStateCode] = useState("");
+
+  // getting states and cities
+  const {
+    data: statesList,
+    // refetch: refetchState,
+    // isLoading: isStateLoading,
+  } = useQuery({
+    queryKey: ["fetchState", countryCode],
+    queryFn: async () => {
+      try {
+        const config = {
+          method: "get",
+          url: `https://api.countrystatecity.in/v1/countries/${countryCode}/states`,
+          headers: {
+            "X-CSCAPI-KEY":
+              "OVM2TEJPWHd2SHRJbjJDSzhGaFQzczZPNk1OdUJQUFp0N0pTVHl1OQ==",
+          },
+        };
+
+        const response = await axios(config);
+        return response?.data;
+      } catch (error) {
+        console.error(error);
+        throw error; // Rethrow the error so React Query can handle it.
+      }
+    },
+    enabled: !!countryCode,
+  });
+
+  const {
+    data: citiesList,
+    // refetch: refetchCity,
+    // isLoading: isStateLoading,
+  } = useQuery({
+    queryKey: ["fetchCities", countryCode, stateCode],
+    queryFn: async () => {
+      try {
+        if (stateCode === "LA") {
+          return cities_in_lagos;
+        }
+
+        const config = {
+          method: "get",
+          url: `https://api.countrystatecity.in/v1/countries/${countryCode}/states/${stateCode}/cities`,
+          headers: {
+            "X-CSCAPI-KEY":
+              "OVM2TEJPWHd2SHRJbjJDSzhGaFQzczZPNk1OdUJQUFp0N0pTVHl1OQ==",
+          },
+        };
+
+        const response = await axios(config);
+        return response?.data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    enabled: !!stateCode,
+  });
 
   // update shipping address in profile
   const { mutate: update, isPending } = useMutation({
@@ -118,13 +196,15 @@ const AddNewShippingAddress = ({
     }: {
       orderId: string;
       body: {
-        name: string;
-        zipcode: string;
-        country: string;
-        street: string;
-        state: string;
-        city: string;
-        phoneNum: string;
+        shippingDetails: {
+          name: string;
+          zipcode: string;
+          country: string;
+          street: string;
+          state: string;
+          city: string;
+          phoneNum: string;
+        };
       };
     }) => {
       return await updateCartItemsShipping({ body, orderId });
@@ -144,13 +224,15 @@ const AddNewShippingAddress = ({
     const cartBody = {
       orderId: cartList?._id,
       body: {
-        name: `${values.firstName} ${values.lastName}`,
-        zipcode: values.address.zipcode,
-        country: values.address.country,
-        street: values.address.street,
-        state: values.address.state,
-        city: values.address.city,
-        phoneNum: values.phoneNumber,
+        shippingDetails: {
+          name: `${values.firstName} ${values.lastName}`,
+          zipcode: values.address.zipcode,
+          country: values.address.country,
+          street: values.address.street,
+          state: values.address.state,
+          city: values.address.city,
+          phoneNum: values.phoneNumber,
+        },
       },
     };
 
@@ -185,9 +267,31 @@ const AddNewShippingAddress = ({
     }
   }, [setValue, profileInformation]);
 
+  useEffect(() => {
+    // country
+    if (profileInformation?.country) {
+      const selectedCountry = countries?.find(
+        (country) => country?.name === profileInformation?.country
+      );
+      if (selectedCountry) {
+        setCountryCode(selectedCountry.code);
+      }
+    }
+
+    // state
+    if (profileInformation?.state) {
+      const selectedState = statesList?.find(
+        (state) => state?.name === profileInformation?.state
+      );
+      if (selectedState) {
+        setStateCode(selectedState?.iso2);
+      }
+    }
+  }, [profileInformation?.country, profileInformation?.state, statesList]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[80%] md:max-w-[60%] lg:max-w-[45%]">
+      <DialogContent className="max-w-[80%] md:max-w-[60%] max-h-[80%] overflow-y-scroll lg:max-w-[45%]">
         <DialogHeader>
           <DialogTitle>Update shipping address</DialogTitle>
         </DialogHeader>
@@ -240,6 +344,106 @@ const AddNewShippingAddress = ({
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="address.country"
+              render={({ field }) => (
+                <FormItem className="col-span-1">
+                  <FormLabel>Country</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => {
+                        const selectedCountry = countries.find(
+                          (country) => country.name === value
+                        );
+                        if (selectedCountry) {
+                          setCountryCode(selectedCountry.code);
+                        }
+                        field.onChange(value); // Update the form's country field
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countries.map((country) => (
+                          <SelectItem key={country.code} value={country.name}>
+                            {country.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="address.state"
+              render={({ field }) => (
+                <FormItem className="col-span-1">
+                  <FormLabel>State</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => {
+                        const selectedState = statesList.find(
+                          (state) => state.name === value
+                        );
+                        if (selectedState) {
+                          setStateCode(selectedState.iso2);
+                        }
+                        field.onChange(value); // Update the form's country field
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a state" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {statesList?.map((state) => (
+                          <SelectItem key={state.id} value={state.name}>
+                            {state.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="address.city"
+              render={({ field }) => (
+                <FormItem className="col-span-1">
+                  <FormLabel>City</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => field.onChange(value)} // Update the form's city field
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a city" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {citiesList?.map((city) => (
+                          <SelectItem key={city.id} value={city.name}>
+                            {city.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {/* Address fields */}
             <FormField
               control={form.control}
@@ -262,45 +466,6 @@ const AddNewShippingAddress = ({
                   <FormLabel>Zipcode</FormLabel>
                   <FormControl>
                     <Input placeholder="Zipcode" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address.city"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input placeholder="City" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address.state"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>State</FormLabel>
-                  <FormControl>
-                    <Input placeholder="State" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address.country"
-              render={({ field }) => (
-                <FormItem className="col-span-1">
-                  <FormLabel>Country</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Country" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
