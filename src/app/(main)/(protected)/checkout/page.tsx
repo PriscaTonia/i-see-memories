@@ -355,7 +355,7 @@ const CheckoutPage = () => {
                 <span className="font-normal">
                   N
                   {formatNumber(
-                    shippingOptions.find(
+                    shippingOptions?.find(
                       (item) => item?.type === selectedOption
                     )?.price || 0
                   )}
