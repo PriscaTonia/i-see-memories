@@ -207,6 +207,8 @@ const Page = ({ params }) => {
                     onClose={closePictureDialog}
                     pictures={item?.pictures}
                     orderNo={orderItem?.orderNo}
+                    frontCoverUrl={item?.frontCoverUrl}
+                    fullCoverUrl={item?.fullCoverUrl}
                   />
                 </section>
               </div>
@@ -218,6 +220,19 @@ const Page = ({ params }) => {
         <h3 className="font-bold text-base lg:text-lg border-b mt-10 pb-1">
           Customer Shipping Details
         </h3>
+
+        <h4 className="text-sm w-full flex gap-1 font-bold">
+          Shipping method:{" "}
+          <span className="font-normal">
+            {orderItem?.shippingPrice?.label || "None Available"}
+          </span>
+        </h4>
+        <p className="text-sm w-full flex gap-1 ">
+          <span className="font-bold">Shipping price: </span>
+          <span className="font-normal">
+            ₦{formatNumber(orderItem?.shippingPrice?.label || 0)}
+          </span>
+        </p>
 
         <div className="flex flex-col gap-1 w-full max-w-[60%] mt-4">
           <p className="text-sm w-full flex gap-1 ">

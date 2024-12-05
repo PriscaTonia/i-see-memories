@@ -18,9 +18,18 @@ interface Props {
   onClose: () => void;
   pictures: Picture[];
   orderNo: string;
+  frontCoverUrl: string;
+  fullCoverUrl: string;
 }
 
-const PictureListModal = ({ isOpen, onClose, pictures, orderNo }: Props) => {
+const PictureListModal = ({
+  isOpen,
+  onClose,
+  pictures,
+  orderNo,
+  frontCoverUrl,
+  fullCoverUrl,
+}: Props) => {
   const sortedPictures = pictures.sort((a, b) => a.pageNo - b.pageNo);
   const [progress, setProgress] = useState(false);
 
@@ -75,6 +84,29 @@ const PictureListModal = ({ isOpen, onClose, pictures, orderNo }: Props) => {
           Download All
           {progress && <LoadingSpinner />}
         </Button>
+
+        {/* covers */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-5">
+          <div className="flex col-span-1 gap-1 flex-wrap flex-col">
+            <h3>Front Cover</h3>
+            <Image
+              src={frontCoverUrl}
+              width={150}
+              height={150}
+              alt={`Front Cover`}
+            />
+          </div>
+
+          <div className="flex col-span-1 gap-1 flex-wrap flex-col">
+            <h3>Full Cover</h3>
+            <Image
+              src={fullCoverUrl}
+              width={150}
+              height={150}
+              alt={`Full Cover`}
+            />
+          </div>
+        </div>
 
         {/* pictures list */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
