@@ -102,6 +102,7 @@ const CartPage = () => {
         title: c?.title,
         subTitle: c?.subTitle,
         color: c?.color,
+        _id: c?._id,
       }))
     );
 
@@ -124,6 +125,7 @@ const CartPage = () => {
         title: c?.title,
         subTitle: c?.subTitle,
         color: c?.color,
+        _id: c?._id,
       }))
     );
     setId("");

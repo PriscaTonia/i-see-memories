@@ -79,6 +79,7 @@ const ProductSummary = () => {
         subTitle: string;
         color: string;
         quantity: number;
+        _id?: string;
       }[]
     ) => {
       return await createCartItem(items);
@@ -109,6 +110,7 @@ const ProductSummary = () => {
   const onSubmit = async () => {
     const c =
       cartList?.items?.map((x) => ({
+        _id: x?._id,
         frontCoverUrl: x?.frontCoverUrl,
         quantity: x?.quantity,
         fullCoverUrl: x?.fullCoverUrl,
@@ -136,16 +138,16 @@ const ProductSummary = () => {
     await create(data);
   };
 
-  console.log({
-    photoBook,
-    productId,
-    template,
-    quantity,
-    product,
-    title,
-    subTitle,
-    color,
-  });
+  // console.log({
+  //   photoBook,
+  //   productId,
+  //   template,
+  //   quantity,
+  //   product,
+  //   title,
+  //   subTitle,
+  //   color,
+  // });
 
   return (
     <Fragment>

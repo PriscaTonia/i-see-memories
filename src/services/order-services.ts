@@ -10,6 +10,7 @@ export const createCartItem = async (
     title: string;
     subTitle: string;
     color: string;
+    _id?: string;
   }[]
 ) => {
   const res = await AXIOS.post(`users/cart`, items);
