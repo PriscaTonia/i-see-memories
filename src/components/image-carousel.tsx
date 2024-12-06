@@ -36,7 +36,7 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ images }) => {
               <Image
                 src={image}
                 alt={`Slide ${index}`}
-                className="w-[80%] swiper-lazy mx-auto h-auto object-contain"
+                className="w-[80%] max-w-[80%] max-h-[400px] swiper-lazy mx-auto h-auto object-contain"
                 width={300}
                 height={300}
                 layout="responsive"
