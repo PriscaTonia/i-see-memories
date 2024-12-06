@@ -123,6 +123,7 @@ const Templates = () => {
                       alt=""
                       width={150}
                       height={150}
+                      className="max-w-[150px] h-[150px]"
                     />
                   </div>
 
@@ -130,7 +131,13 @@ const Templates = () => {
                     <p className="text-base flex items-center justify-between gap-4">
                       Back cover:
                     </p>
-                    <Image src={t?.fullCover} alt="" width={150} height={150} />
+                    <Image
+                      src={t?.fullCover}
+                      alt=""
+                      width={150}
+                      height={150}
+                      className="max-w-[150px] h-[150px]"
+                    />
                   </div>
                 </div>
 
