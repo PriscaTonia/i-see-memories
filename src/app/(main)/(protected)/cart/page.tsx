@@ -66,6 +66,7 @@ const CartPage = () => {
         title: string;
         subTitle: string;
         color: string;
+        _id?: string;
       }[]
     ) => {
       return await createCartItem(items);

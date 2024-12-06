@@ -33,6 +33,7 @@ const ProductSummary = () => {
   const title = useStore(photoBookStore, (state) => state.title);
   const subTitle = useStore(photoBookStore, (state) => state.subTitle);
   const color = useStore(photoBookStore, (state) => state.color);
+  const resetStore = useStore(photoBookStore, (state) => state.resetStore);
 
   const incrementQuantity = useStore(
     photoBookStore,
@@ -97,7 +98,10 @@ const ProductSummary = () => {
         notify("success", "Order created successfully!");
       } catch (error) {
         console.error("Error uploading images:", error);
+        notify("error", `Error uploading images: ${error}`);
       }
+
+      resetStore();
 
       push("/cart");
     },

@@ -40,6 +40,7 @@ export type PhotoBookActions = {
   setTitle: (title: string) => void;
   setSubTitle: (subTitle: string) => void;
   setColor: (color: string) => void;
+  resetStore: () => void;
 };
 
 export type PhotoBookStore = PhotoBookState & PhotoBookActions;
@@ -94,5 +95,8 @@ export const createPhotoBookStore = (
     setSubTitle: (subTitle: string) =>
       set((state) => ({ ...state, subTitle: subTitle })),
     setColor: (color: string) => set((state) => ({ ...state, color: color })),
+
+    // Reset the store to its initial state
+    resetStore: () => set(() => ({ ...defaultInitState })),
   }));
 };
