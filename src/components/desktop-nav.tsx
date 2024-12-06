@@ -18,6 +18,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { getUser } from "@/lib/session";
 // import { getUser } from "@/lib/session";
 
 interface Props {
@@ -27,8 +28,19 @@ interface Props {
 export const DesktopNav = ({ navLinks }: Props) => {
   const router = useRouter();
 
+  const isUserLoggedIn = async () => {
+    const isLoggedIn = await getUser();
+
+    if (!isLoggedIn) {
+      router.push("/auth/sign-in");
+      return;
+    } else {
+      router.push(`/account/profile-settings`);
+    }
+  };
+
   const handleProfileClick = () => {
-    router.push("/account/profile-settings");
+    isUserLoggedIn();
     // console.log(getUser());
   };
 
@@ -49,11 +61,11 @@ export const DesktopNav = ({ navLinks }: Props) => {
               <Star1 size="12.35" color="#FFFFFF" variant="Bold" />{" "}
               <Star1 size="12.35" color="#FFFFFF" variant="Bold" />
             </span>
-            Over 10,000+ 5 Star Reviews
+            Over 100+ 5 Star Reviews
           </p>
           <p className="flex gap-2 text-white col-span-1">
             <MoneyRecive size="20" color="#FFFFFF" variant="Bold" />
-            30 Day Money Back Guarantee
+            Great Customer Service
           </p>
         </div>
       </section>

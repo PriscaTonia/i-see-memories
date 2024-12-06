@@ -1,3 +1,4 @@
+"use client";
 import React, { ReactElement } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { HambergerMenu, Profile, ShoppingCart, Truck } from "iconsax-react";
@@ -11,6 +12,8 @@ import Link from "next/link";
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { getUser } from "@/lib/session";
+import { useRouter } from "next/navigation";
 
 interface Props {
   navLinks: { title: string; path: string }[];
@@ -18,6 +21,24 @@ interface Props {
 }
 
 export const MobileNav = ({ navLinks, mobnavLinks }: Props) => {
+  const router = useRouter();
+
+  const isUserLoggedIn = async () => {
+    const isLoggedIn = await getUser();
+
+    if (!isLoggedIn) {
+      router.push("/auth/sign-in");
+      return;
+    } else {
+      router.push(`/account/profile-settings`);
+    }
+  };
+
+  const handleProfileClick = () => {
+    isUserLoggedIn();
+    // console.log(getUser());
+  };
+
   return (
     <div className="bg-white md:hidden">
       {/* top bar */}
@@ -79,7 +100,10 @@ export const MobileNav = ({ navLinks, mobnavLinks }: Props) => {
                             <NavigationMenuItem>
                               <Link href={item?.path} legacyBehavior passHref>
                                 <NavigationMenuLink
-                                  className={navigationMenuTriggerStyle()}
+                                  className={cn(
+                                    navigationMenuTriggerStyle(),
+                                    "w-full flex justify-normal items-start"
+                                  )}
                                 >
                                   {item?.title}
                                 </NavigationMenuLink>
@@ -90,7 +114,10 @@ export const MobileNav = ({ navLinks, mobnavLinks }: Props) => {
                       );
                     })}
                   </div>
-                  <div className="flex gap-2 py-6 justify-normal items-start w-full">
+                  <div
+                    onClick={handleProfileClick}
+                    className="flex gap-2 py-6 justify-normal items-start w-full"
+                  >
                     <Profile size="24" color="#000000" /> Account
                   </div>
                 </NavigationMenuList>

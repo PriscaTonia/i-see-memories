@@ -125,24 +125,21 @@ const TermsAndConditions = () => {
         </h3>
         <p className="border-b pb-3">
           Certain products or Services may be available exclusively online
-          through the website. These products or Services may have limited
-          quantities and are subject to return or exchange only according to our
-          Refund Policy: [LINK TO REFUND POLICY] We have made every effort to
-          display as accurately as possible the colors and images of our
-          products that appear at the store. We cannot guarantee that your
-          computer monitor&apos;s display of any color will be accurate. We
-          reserve the right, but are not obligated, to limit the sales of our
-          products or Services to any person, geographic region or jurisdiction.
-          We may exercise this right on a case-by-case basis. We reserve the
-          right to limit the quantities of any products or Services that we
-          offer. All descriptions of products or product pricing are subject to
-          change at anytime without notice, at the sole discretion of us. We
-          reserve the right to discontinue any product at any time. Any offer
-          for any product or Service made on this site is void where prohibited.
-          We do not warrant that the quality of any products, Services,
-          information, or other material purchased or obtained by you will meet
-          your expectations, or that any errors in the Service will be
-          corrected.
+          through the website. We have made every effort to display as
+          accurately as possible the colors and images of our products that
+          appear at the store. We cannot guarantee that your computer
+          monitor&apos;s display of any color will be accurate. We reserve the
+          right, but are not obligated, to limit the sales of our products or
+          Services to any person, geographic region or jurisdiction. We may
+          exercise this right on a case-by-case basis. We reserve the right to
+          limit the quantities of any products or Services that we offer. All
+          descriptions of products or product pricing are subject to change at
+          anytime without notice, at the sole discretion of us. We reserve the
+          right to discontinue any product at any time. Any offer for any
+          product or Service made on this site is void where prohibited. We do
+          not warrant that the quality of any products, Services, information,
+          or other material purchased or obtained by you will meet your
+          expectations, or that any errors in the Service will be corrected.
         </p>
 
         {/* sec six */}
@@ -393,7 +390,7 @@ const TermsAndConditions = () => {
         <p className="border-b pb-3">
           These Terms of Service and any separate agreements whereby we provide
           you Services shall be governed by and construed in accordance with the
-          laws of the United Kingdom.
+          laws of the Federal Republic of Nigeria.
         </p>
 
         <h3 className="text-lg lg:text-2xl font-bold">
@@ -432,99 +429,11 @@ const TermsAndConditions = () => {
           </a>
         </p>
 
-        <h3 className="text-lg lg:text-2xl font-bold">REFUND POLICY</h3>
-        <p>
-          We have a 30-day return policy, which means you have 30 days after
-          receiving your item to request a return.
-        </p>
-        <p>
-          To be eligible for a return, your item must be in the same condition
-          that you received it, unworn or unused, with tags, and in its original
-          packaging. You’ll also need the receipt or proof of purchase.
-        </p>
-        <p>
-          To start a return, you can contact us at{" "}
-          <a
-            href="mailto:support@iseememoriesng.com"
-            className="text-blue-500 underline"
-          >
-            support@iseememoriesng.com
-          </a>
-          . If your return is accepted, we’ll send you a return shipping label,
-          as well as instructions on how and where to send your package. Items
-          sent back to us without first requesting a return will not be
-          accepted.
-        </p>
-        <p className="border-b pb-3">
-          You can always contact us for any return question at{" "}
-          <a
-            href="mailto:support@iseememoriesng.com"
-            className="text-blue-500 underline"
-          >
-            support@iseememoriesng.com
-          </a>
-          .
-        </p>
-
         <h3 className="text-lg lg:text-2xl font-bold">Damages and issues</h3>
         <p className="border-b pb-3">
           Please inspect your order upon reception and contact us immediately if
           the item is defective, damaged or if you receive the wrong item, so
           that we can evaluate the issue and make it right.
-        </p>
-
-        <h3 className="text-lg lg:text-2xl font-bold">
-          Exceptions / non-returnable items
-        </h3>
-        <p>
-          Certain types of items cannot be returned, like perishable goods (such
-          as food, flowers, or plants), custom products (such as special orders
-          or personalized items), and personal care goods (such as beauty
-          products). We also do not accept returns for hazardous materials,
-          flammable liquids, or gases. Please get in touch if you have questions
-          or concerns about your specific item.
-        </p>
-        <p className="border-b pb-3">
-          Unfortunately, we cannot accept returns on sale items or gift cards.
-        </p>
-
-        <h3 className="text-lg lg:text-2xl font-bold">Exchanges</h3>
-        <p className="border-b pb-3">
-          The fastest way to ensure you get what you want is to return the item
-          you have, and once the return is accepted, make a separate purchase
-          for the new item.
-        </p>
-
-        <h3 className="text-lg lg:text-2xl font-bold">
-          European Union 14 day cooling off period
-        </h3>
-        <p className="border-b pb-3">
-          Notwithstanding the above, if the merchandise is being shipped into
-          the European Union, you have the right to cancel or return your order
-          within 14 days, for any reason and without a justification. As above,
-          your item must be in the same condition that you received it, unworn
-          or unused, with tags, and in its original packaging. You’ll also need
-          the receipt or proof of purchase.
-        </p>
-
-        <h3 className="text-lg lg:text-2xl font-bold">Refunds</h3>
-        <p>
-          We will notify you once we’ve received and inspected your return, and
-          let you know if the refund was approved or not. If approved, you’ll be
-          automatically refunded on your original payment method within 10
-          business days. Please remember it can take some time for your bank or
-          credit card company to process and post the refund too.
-        </p>
-        <p className="border-b pb-3">
-          If more than 15 business days have passed since we’ve approved your
-          return, please contact us at{" "}
-          <a
-            href="mailto:support@iseememoriesng.com"
-            className="text-blue-500 underline"
-          >
-            support@iseememoriesng.com
-          </a>
-          .
         </p>
       </div>
 
