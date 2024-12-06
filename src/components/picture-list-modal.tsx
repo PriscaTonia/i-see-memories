@@ -118,7 +118,7 @@ const PictureListModal = ({
               width={150}
               height={150}
               alt={`Front Cover`}
-              className="max-w-[150px] min-h-[150px]"
+              className="max-w-[150px] h-[150px] max-h-[150px]"
             />
           </div>
 
@@ -129,7 +129,7 @@ const PictureListModal = ({
               width={150}
               height={150}
               alt={`Full Cover`}
-              className="max-w-[150px] min-h-[150px]"
+              className="max-w-[150px] h-[150px]"
             />
           </div>
         </div>
@@ -147,7 +147,7 @@ const PictureListModal = ({
                 width={150}
                 height={150}
                 alt={`Page ${picture.pageNo}`}
-                className="max-w-[150px] max-h-[140px]"
+                className="max-w-[150px]  max-h-[150px]"
               />
             </div>
           ))}
