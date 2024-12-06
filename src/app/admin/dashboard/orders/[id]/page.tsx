@@ -42,6 +42,8 @@ const Page = ({ params }) => {
     setActiveItem(null); // Reset the active item
   };
 
+  console.log(activeItem);
+
   const {
     data: orderItem,
     refetch: OrderRefetch,
