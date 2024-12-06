@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import UpdateOrder from "@/components/update-order";
 import { notify } from "@/lib/notify";
+import { Item } from "@/lib/types";
 import {
   fetchAnOrderDetails,
   OrderStatusEnum,
@@ -24,12 +25,22 @@ const Page = ({ params }) => {
   const { formatNumber } = useNumberFormatter();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [isPictureDialogOpen, setPictureDialogOpen] = useState(false);
+  // const [isPictureDialogOpen, setPictureDialogOpen] = useState(false);
 
   const openDialog = () => setDialogOpen(true);
-  const openPictureDialog = () => setPictureDialogOpen(true);
+  // const openPictureDialog = () => setPictureDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
-  const closePictureDialog = () => setPictureDialogOpen(false);
+  // const closePictureDialog = () => setPictureDialogOpen(false);
+
+  const [activeItem, setActiveItem] = useState<Item | null>(null);
+
+  const openPictureDialog = (item) => {
+    setActiveItem(item); // Set the active item
+  };
+
+  const closePictureDialog = () => {
+    setActiveItem(null); // Reset the active item
+  };
 
   const {
     data: orderItem,
@@ -202,14 +213,16 @@ const Page = ({ params }) => {
                   </button>
 
                   {/* Pictures Dialog */}
-                  <PictureListModal
-                    isOpen={isPictureDialogOpen}
-                    onClose={closePictureDialog}
-                    pictures={item?.pictures}
-                    orderNo={orderItem?.orderNo}
-                    frontCoverUrl={item?.frontCoverUrl}
-                    fullCoverUrl={item?.fullCoverUrl}
-                  />
+                  {activeItem && (
+                    <PictureListModal
+                      isOpen={activeItem?._id === item?._id}
+                      onClose={closePictureDialog}
+                      pictures={activeItem?.pictures || []}
+                      orderNo={orderItem?.orderNo || ""}
+                      frontCoverUrl={activeItem?.frontCoverUrl || ""}
+                      fullCoverUrl={activeItem?.fullCoverUrl || ""}
+                    />
+                  )}
                 </section>
               </div>
             );
@@ -230,7 +243,7 @@ const Page = ({ params }) => {
         <p className="text-sm w-full flex gap-1 ">
           <span className="font-bold">Shipping price: </span>
           <span className="font-normal">
-            ₦{formatNumber(orderItem?.shippingPrice?.label || 0)}
+            ₦{formatNumber(orderItem?.shippingPrice?.price || 0)}
           </span>
         </p>
 

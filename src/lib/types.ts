@@ -51,6 +51,8 @@ export interface ShippingDetails {
 
 export interface OrderItem {
   shippingDetails: ShippingDetails;
+  shippingType: string;
+  // shippingPrice: any;
   paidOn: null;
   orderNo: string;
   _id: string;
