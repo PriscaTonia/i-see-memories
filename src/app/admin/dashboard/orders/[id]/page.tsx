@@ -42,7 +42,7 @@ const Page = ({ params }) => {
     setActiveItem(null); // Reset the active item
   };
 
-  console.log(activeItem);
+  // console.log(activeItem);
 
   const {
     data: orderItem,
