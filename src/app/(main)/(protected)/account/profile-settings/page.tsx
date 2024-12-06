@@ -2,6 +2,7 @@
 import UpdateAddressForm from "@/components/address-settings";
 import UpdatePasswordForm from "@/components/password-settings";
 import UpdateProfileForm from "@/components/profile-settings";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { logoutUser } from "@/lib/logout";
 import { notify } from "@/lib/notify";
 import { fetchProfileInfo, updateProfile } from "@/services/profile-services";
@@ -29,7 +30,7 @@ const ProfileSettings = () => {
   const {
     data: profileInformation,
     refetch,
-    // isLoading,
+    isLoading,
   } = useQuery({
     queryKey: ["fetchProfile", userId],
     queryFn: async () => {
@@ -79,6 +80,14 @@ const ProfileSettings = () => {
       notify("error", message as string);
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-[80vh]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-10 px-6 font-hagrid">

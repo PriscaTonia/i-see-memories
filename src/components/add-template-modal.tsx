@@ -131,7 +131,7 @@ const AddNewTemplateModal = ({
     const fullCoverUrl = await handleImageUpload(
       fullCover,
       templateInfo?.fullCover || "",
-      "Full Cover"
+      "Back Cover"
     );
 
     const body = {
@@ -221,15 +221,15 @@ const AddNewTemplateModal = ({
               <FormMessage />
             </FormItem>
 
-            {/* Full Cover Field */}
+            {/* Back Cover Field */}
             <FormItem className="col-span-1">
-              <FormLabel>Full Cover</FormLabel>
+              <FormLabel>Back Cover</FormLabel>
               <FormControl>
                 <div>
-                  {/* Full Cover Preview */}
+                  {/* Back Cover Preview */}
                   <div className="mb-2">
                     <p className="text-sm text-gray-500">
-                      {isEdit ? "Current Full Cover:" : "Preview Full Cover:"}
+                      {isEdit ? "Current Back Cover:" : "Preview Back Cover:"}
                     </p>
 
                     {fullCover || templateInfo?.fullCover ? (

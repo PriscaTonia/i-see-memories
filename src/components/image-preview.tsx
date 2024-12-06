@@ -45,7 +45,7 @@ const ImageBookPreview = ({ images }: Props) => {
             height={120}
             className="object-contain w-[120px] h-[120px] rounded-md shadow-md"
           />
-          <p className="text-center text-xs mt-2">Full cover</p>
+          <p className="text-center text-xs mt-2">Back cover</p>
         </div>
       </div>
 

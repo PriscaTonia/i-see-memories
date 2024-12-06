@@ -29,6 +29,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { notify } from "@/lib/notify";
 import { getUser } from "@/lib/session";
 import CustomizeTemplateModal from "@/components/customize-template-modal";
+// import { ColorSwatch } from "iconsax-react";
 
 const TravelPhotoBook = () => {
   const { push } = useRouter();
@@ -39,7 +40,6 @@ const TravelPhotoBook = () => {
 
   const [carouselImages, setCarouselImages] = useState<string[]>([
     "/img2.webp",
-    "/img3.webp",
   ]);
 
   const isUserLoggedIn = async () => {
@@ -57,9 +57,9 @@ const TravelPhotoBook = () => {
   const setTemplate = useStore(photoBookStore, (state) => state.setTemplateId);
   const setProduct = useStore(photoBookStore, (state) => state.setProduct);
 
-  const title = useStore(photoBookStore, (state) => state.title);
-  const subTitle = useStore(photoBookStore, (state) => state.subTitle);
-  const color = useStore(photoBookStore, (state) => state.color);
+  // const title = useStore(photoBookStore, (state) => state.title);
+  // const subTitle = useStore(photoBookStore, (state) => state.subTitle);
+  // const color = useStore(photoBookStore, (state) => state.color);
 
   const {
     data,
@@ -138,7 +138,6 @@ const TravelPhotoBook = () => {
       const newImages = [
         selectedTemplate?.frontCover,
         "/img2.webp",
-        "/img3.webp",
         selectedTemplate?.fullCover,
       ];
       setCarouselImages(newImages);
@@ -242,7 +241,14 @@ const TravelPhotoBook = () => {
             </Select>
 
             {selectedTemplate && (
-              <Button onClick={openDialog}>Customize Your Template</Button>
+              <div className="w-full">
+                <p className="text-sm mb-2 text-[#6e6d6b] font-semibold">
+                  You can customize your book title, subtitle and color.
+                </p>
+                <Button className="w-full" onClick={openDialog}>
+                  Customize Your Template
+                </Button>
+              </div>
             )}
 
             <p className="text-sm mb-2 text-[#6e6d6b] font-semibold">
@@ -281,14 +287,6 @@ const TravelPhotoBook = () => {
               onClick={() => {
                 if (!selectedPage || !selectedTemplate) {
                   notify("error", "Select a template and number of pages");
-                  return;
-                }
-
-                if (!title || !subTitle || !color) {
-                  notify(
-                    "error",
-                    "Customize your template and select a color for your cover"
-                  );
                   return;
                 }
 

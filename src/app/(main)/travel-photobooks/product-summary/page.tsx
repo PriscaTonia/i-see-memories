@@ -76,9 +76,9 @@ const ProductSummary = () => {
         productId: string;
         fullCoverUrl: string;
         frontCoverUrl: string;
-        title: string;
-        subTitle: string;
-        color: string;
+        title?: string;
+        subTitle?: string;
+        color?: string;
         quantity: number;
         _id?: string;
       }[]
@@ -247,7 +247,7 @@ const ProductSummary = () => {
                 Cover Title
               </span>
               <span className="font-normal flex py-2 px-3 w-full place-self-end border border-black border-opacity-15">
-                {title}
+                {title || "Nil"}
               </span>
             </p>
 
@@ -256,7 +256,7 @@ const ProductSummary = () => {
                 Sub Title
               </span>
               <span className="font-normal flex py-2 px-3 w-full place-self-end border border-black border-opacity-15">
-                {subTitle}
+                {subTitle || "Nil"}
               </span>
             </p>
 
@@ -265,7 +265,7 @@ const ProductSummary = () => {
                 Color
               </span>
               <span className="font-normal flex gap-2 py-2 px-3 w-full place-self-end border border-black border-opacity-15">
-                {color}
+                {color || "Nil"}
                 <span
                   className="w-[30px] h-[20px] rounded-md"
                   style={{ backgroundColor: color }}

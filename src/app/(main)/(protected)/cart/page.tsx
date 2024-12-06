@@ -63,9 +63,9 @@ const CartPage = () => {
         fullCoverUrl: string;
         frontCoverUrl: string;
         quantity: number;
-        title: string;
-        subTitle: string;
-        color: string;
+        title?: string;
+        subTitle?: string;
+        color?: string;
         _id?: string;
       }[]
     ) => {

@@ -128,7 +128,7 @@ const Templates = () => {
 
                   <div className="flex flex-col gap-1">
                     <p className="text-base flex items-center justify-between gap-4">
-                      Full cover:
+                      Back cover:
                     </p>
                     <Image src={t?.fullCover} alt="" width={150} height={150} />
                   </div>

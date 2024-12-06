@@ -144,3 +144,11 @@ export const cities_in_lagos = [
     longitude: "3.28170000",
   },
 ];
+
+export const countries = [
+  {
+    id: 1,
+    name: "Nigeria",
+    code: "NG",
+  },
+];

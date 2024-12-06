@@ -7,9 +7,9 @@ export const createCartItem = async (
     frontCoverUrl: string;
     productId: string;
     quantity: number;
-    title: string;
-    subTitle: string;
-    color: string;
+    title?: string;
+    subTitle?: string;
+    color?: string;
     _id?: string;
   }[]
 ) => {

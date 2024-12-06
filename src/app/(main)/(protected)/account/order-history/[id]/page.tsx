@@ -122,18 +122,19 @@ const Page = ({ params }) => {
                 className="flex flex-col gap-2 md:max-w-[95%] w-full"
               >
                 {/* customization details */}
-                {/* customization details */}
                 <p className="text-base w-full flex gap-1 ">
                   <span className="font-bold">Title: </span>
-                  <span className="font-normal">{item?.title}</span>
+                  <span className="font-normal">{item?.title || "-"}</span>
                 </p>
                 <p className="text-base w-full flex gap-1 ">
                   <span className="font-bold">Sub Title: </span>
-                  <span className="font-normal">{item?.subTitle}</span>
+                  <span className="font-normal">{item?.subTitle || "-"}</span>
                 </p>
                 <p className="text-base w-full flex gap-1 mb-2 ">
                   <span className="font-bold">Color Code: </span>
-                  <span className="font-normal uppercase">{item?.color}</span>
+                  <span className="font-normal uppercase">
+                    {item?.color || "-"}
+                  </span>
                   <span
                     className="w-[30px] h-[20px] rounded-md"
                     style={{ backgroundColor: item?.color }}

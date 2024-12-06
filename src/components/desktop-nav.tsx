@@ -1,11 +1,5 @@
 "use client";
-import {
-  MoneyRecive,
-  Profile,
-  ShoppingCart,
-  Star1,
-  Truck,
-} from "iconsax-react";
+import { People, Profile, ShoppingCart, Star1, Truck } from "iconsax-react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -64,7 +58,7 @@ export const DesktopNav = ({ navLinks }: Props) => {
             Over 100+ 5 Star Reviews
           </p>
           <p className="flex gap-2 text-white col-span-1">
-            <MoneyRecive size="20" color="#FFFFFF" variant="Bold" />
+            <People size="20" color="#FFFFFF" variant="Bold" />
             Great Customer Service
           </p>
         </div>

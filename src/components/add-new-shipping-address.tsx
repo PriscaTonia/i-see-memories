@@ -33,7 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cities_in_lagos } from "@/lib/data";
+import { cities_in_lagos, countries } from "@/lib/data";
 
 interface Props {
   isOpen: boolean;
@@ -63,14 +63,6 @@ const formSchema = z.object({
     country: z.string().min(1, { message: "Country is required." }),
   }),
 });
-
-const countries = [
-  {
-    id: 1,
-    name: "Nigeria",
-    code: "NG",
-  },
-];
 
 const AddNewShippingAddress = ({
   isOpen,
@@ -103,11 +95,7 @@ const AddNewShippingAddress = ({
   const [stateCode, setStateCode] = useState("");
 
   // getting states and cities
-  const {
-    data: statesList,
-    // refetch: refetchState,
-    // isLoading: isStateLoading,
-  } = useQuery({
+  const { data: statesList } = useQuery({
     queryKey: ["fetchState", countryCode],
     queryFn: async () => {
       try {
@@ -130,11 +118,7 @@ const AddNewShippingAddress = ({
     enabled: !!countryCode,
   });
 
-  const {
-    data: citiesList,
-    // refetch: refetchCity,
-    // isLoading: isStateLoading,
-  } = useQuery({
+  const { data: citiesList } = useQuery({
     queryKey: ["fetchCities", countryCode, stateCode],
     queryFn: async () => {
       try {
@@ -353,13 +337,15 @@ const AddNewShippingAddress = ({
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        const selectedCountry = countries.find(
-                          (country) => country.name === value
-                        );
-                        if (selectedCountry) {
-                          setCountryCode(selectedCountry.code);
+                        if (value) {
+                          const selectedCountry = countries?.find(
+                            (country) => country?.name === value
+                          );
+                          if (selectedCountry) {
+                            setCountryCode(selectedCountry?.code);
+                          }
+                          field.onChange(value);
                         }
-                        field.onChange(value); // Update the form's country field
                       }}
                       value={field.value}
                     >
@@ -367,9 +353,9 @@ const AddNewShippingAddress = ({
                         <SelectValue placeholder="Select a country" />
                       </SelectTrigger>
                       <SelectContent>
-                        {countries.map((country) => (
-                          <SelectItem key={country.code} value={country.name}>
-                            {country.name}
+                        {countries?.map((country) => (
+                          <SelectItem key={country?.code} value={country?.name}>
+                            {country?.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -389,13 +375,15 @@ const AddNewShippingAddress = ({
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        const selectedState = statesList.find(
-                          (state) => state.name === value
-                        );
-                        if (selectedState) {
-                          setStateCode(selectedState.iso2);
+                        if (value) {
+                          const selectedState = statesList?.find(
+                            (state) => state?.name === value
+                          );
+                          if (selectedState) {
+                            setStateCode(selectedState?.iso2);
+                          }
+                          field.onChange(value);
                         }
-                        field.onChange(value); // Update the form's country field
                       }}
                       value={field.value}
                     >
@@ -404,8 +392,8 @@ const AddNewShippingAddress = ({
                       </SelectTrigger>
                       <SelectContent>
                         {statesList?.map((state) => (
-                          <SelectItem key={state.id} value={state.name}>
-                            {state.name}
+                          <SelectItem key={state?.id} value={state?.name}>
+                            {state?.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -424,7 +412,11 @@ const AddNewShippingAddress = ({
                   <FormLabel>City</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={(value) => field.onChange(value)} // Update the form's city field
+                      onValueChange={(value) => {
+                        if (value) {
+                          field.onChange(value);
+                        }
+                      }}
                       value={field.value}
                     >
                       <SelectTrigger>
@@ -432,8 +424,8 @@ const AddNewShippingAddress = ({
                       </SelectTrigger>
                       <SelectContent>
                         {citiesList?.map((city) => (
-                          <SelectItem key={city.id} value={city.name}>
-                            {city.name}
+                          <SelectItem key={city?.id} value={city?.name}>
+                            {city?.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

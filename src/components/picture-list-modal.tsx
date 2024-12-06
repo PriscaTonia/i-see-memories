@@ -56,11 +56,11 @@ const PictureListModal = ({
       if (fullCoverUrl) {
         const fullCoverResponse = await fetch(fullCoverUrl);
         if (!fullCoverResponse.ok) {
-          throw new Error(`Failed to fetch full cover image: ${fullCoverUrl}`);
+          throw new Error(`Failed to fetch back cover image: ${fullCoverUrl}`);
         }
         const fullCoverBlob = await fullCoverResponse.blob();
         const fullCoverExtension = fullCoverUrl.split(".").pop();
-        imagesFolder.file(`Full_Cover.${fullCoverExtension}`, fullCoverBlob);
+        imagesFolder.file(`Back_Cover.${fullCoverExtension}`, fullCoverBlob);
       }
 
       // Step 1: Sort pictures by pageNo
@@ -110,7 +110,7 @@ const PictureListModal = ({
         </Button>
 
         {/* covers */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-5">
+        <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-3 lg:gap-5">
           <div className="flex col-span-1 gap-1 flex-wrap flex-col">
             <h3>Front Cover</h3>
             <Image
@@ -118,18 +118,18 @@ const PictureListModal = ({
               width={150}
               height={150}
               alt={`Front Cover`}
-              className="max-w-[150px] max-h-[150px]"
+              className="max-w-[150px] min-h-[150px]"
             />
           </div>
 
           <div className="flex col-span-1 gap-1 flex-wrap flex-col">
-            <h3>Full Cover</h3>
+            <h3>Back Cover</h3>
             <Image
               src={fullCoverUrl}
               width={150}
               height={150}
               alt={`Full Cover`}
-              className="max-w-[150px] max-h-[150px]"
+              className="max-w-[150px] min-h-[150px]"
             />
           </div>
         </div>
@@ -147,7 +147,7 @@ const PictureListModal = ({
                 width={150}
                 height={150}
                 alt={`Page ${picture.pageNo}`}
-                className="max-w-[150px] max-h-[150px]"
+                className="max-w-[150px] max-h-[140px]"
               />
             </div>
           ))}
