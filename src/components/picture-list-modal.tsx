@@ -39,6 +39,30 @@ const PictureListModal = ({
       const zip = new JSZip();
       const imagesFolder = zip.folder(`ISM_${orderNo}`);
 
+      // Add the front cover
+      if (frontCoverUrl) {
+        const frontCoverResponse = await fetch(frontCoverUrl);
+        if (!frontCoverResponse.ok) {
+          throw new Error(
+            `Failed to fetch front cover image: ${frontCoverUrl}`
+          );
+        }
+        const frontCoverBlob = await frontCoverResponse.blob();
+        const frontCoverExtension = frontCoverUrl.split(".").pop();
+        imagesFolder.file(`Front_Cover.${frontCoverExtension}`, frontCoverBlob);
+      }
+
+      // Add the full cover
+      if (fullCoverUrl) {
+        const fullCoverResponse = await fetch(fullCoverUrl);
+        if (!fullCoverResponse.ok) {
+          throw new Error(`Failed to fetch full cover image: ${fullCoverUrl}`);
+        }
+        const fullCoverBlob = await fullCoverResponse.blob();
+        const fullCoverExtension = fullCoverUrl.split(".").pop();
+        imagesFolder.file(`Full_Cover.${fullCoverExtension}`, fullCoverBlob);
+      }
+
       // Step 1: Sort pictures by pageNo
       const sortedPictures = [...pictures].sort((a, b) => a.pageNo - b.pageNo);
 

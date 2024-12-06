@@ -146,15 +146,15 @@ const Page = ({ params }) => {
                 className="flex flex-col gap-2 md:max-w-[95%] w-full"
               >
                 {/* customization details */}
-                <p className="text-base w-full flex gap-1 ">
+                <p className="text-sm w-full flex gap-1 ">
                   <span className="font-bold">Title: </span>
                   <span className="font-normal">{item?.title}</span>
                 </p>
-                <p className="text-base w-full flex gap-1 ">
+                <p className="text-sm w-full flex gap-1 ">
                   <span className="font-bold">Sub Title: </span>
                   <span className="font-normal">{item?.subTitle}</span>
                 </p>
-                <p className="text-base w-full flex gap-1 mb-2">
+                <p className="text-sm w-full flex gap-1 mb-2">
                   <span className="font-bold">Color Code: </span>
                   <span className="font-normal uppercase">{item?.color}</span>
                   <span
@@ -206,7 +206,7 @@ const Page = ({ params }) => {
 
                   {/* images list */}
                   <button
-                    onClick={openPictureDialog}
+                    onClick={() => openPictureDialog(item)}
                     className="underline font-semibold w-fit"
                   >
                     View Images
@@ -234,7 +234,7 @@ const Page = ({ params }) => {
           Customer Shipping Details
         </h3>
 
-        <h4 className="text-sm w-full flex gap-1 font-bold">
+        <h4 className="text-sm w-full flex gap-1 font-bold mt-4">
           Shipping method:{" "}
           <span className="font-normal">
             {orderItem?.shippingPrice?.label || "None Available"}
